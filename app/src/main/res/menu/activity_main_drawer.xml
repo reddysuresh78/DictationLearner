@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single" android:id="@+id/grp_features">
+        <item
+            android:id="@+id/nav_dictation_list"
+            android:icon="@drawable/ic_list_black_24dp"
+            android:title="Dictations List" />
+        <item
+            android:id="@+id/nav_tests_list"
+            android:icon="@drawable/ic_playlist_add_check_black_24dp"
+            android:title="Tests Summary" />
+
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="DB Viewer" />
+</group>
+
+    <group android:checkableBehavior="single" android:id="@+id/grp_settings">
+        <item
+            android:id="@+id/nav_parent_mode"
+            android:title="@string/parent_mode"
+            android:icon="@drawable/ic_person_black_24dp"
+            app:actionLayout="@layout/nav_current_mode" />
+
+        <item
+            android:id="@+id/nav_test_show_images"
+            android:title="@string/test_show_images"
+            android:icon="@drawable/ic_insert_photo_black_24dp"
+            app:actionLayout="@layout/nav_show_images" />
+    </group>
+
+</menu>

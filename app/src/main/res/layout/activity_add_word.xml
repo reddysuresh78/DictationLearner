@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_add_word"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.ri.dictationlearner.activity.AddWordActivity">
+
+
+    <TextView
+        android:id="@+id/tvNewWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_margin="16dp"
+        android:textSize="24sp"
+        tools:text="Word"
+        android:text="@string/label_new_word"
+        android:textColor="@android:color/primary_text_light"
+        />
+
+    <EditText
+        android:id="@+id/etNewWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tvNewWord"
+
+        android:layout_margin="8dp"
+        android:textSize="24sp"
+        android:hint="@string/hint_enter_word"
+        tools:text="Enter Word"
+        android:textColor="@android:color/primary_text_light"
+        />
+
+    <TextView
+        android:id="@+id/tvNewWordImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvNewWord"
+        android:layout_alignLeft="@+id/tvNewWord"
+        android:layout_margin="4dp"
+        android:textSize="24sp"
+        tools:text="Image"
+        android:text="Picture"
+        android:textColor="@android:color/primary_text_light"
+        />
+
+    <ImageButton
+        android:id="@+id/ibSelectNewWordImage"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_below="@+id/etNewWord"
+        android:layout_alignLeft="@+id/etNewWord"
+        android:layout_margin="8dp"
+        android:src="@drawable/ic_insert_photo_white_24dp"
+        tools:src="@drawable/ic_insert_photo_white_24dp"
+        android:background="@android:color/transparent"
+        android:tint="@color/colorPrimary"
+        />
+
+    <ImageView
+        android:id="@+id/ivNewWordImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ibSelectNewWordImage"
+        android:layout_margin="8dp"
+        android:src="@drawable/pig"
+        tools:src="@drawable/pig"
+        android:background="@android:color/transparent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:scaleType="center"
+        />
+
+
+</RelativeLayout>
