@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.ri.dictationlearner.R;
 import com.ri.dictationlearner.activity.db.DatabaseHelper;
-import com.ri.dictationlearner.adapters.DictationWordsCursorAdapter;
+import com.ri.dictationlearner.adapters.DictationWordListAdapter;
 import com.ri.dictationlearner.domain.Dictation;
 import com.ri.dictationlearner.domain.GlobalState;
 import com.ri.dictationlearner.domain.Word;
@@ -46,7 +46,7 @@ public class WordsListActivity extends AppCompatActivity {
 
     private Cursor cursor = null;
 
-    private DictationWordsCursorAdapter cursorAdapter = null;
+    private DictationWordListAdapter cursorAdapter = null;
 
 
     @Override
@@ -105,7 +105,7 @@ public class WordsListActivity extends AppCompatActivity {
 
         cursor = dbHelper.getWordList(dictation.getId());
 
-        cursorAdapter = new DictationWordsCursorAdapter(this, cursor, 0  );
+        cursorAdapter = new DictationWordListAdapter(this, cursor, 0  );
         cursorAdapter.setReadOnlyMode(!GlobalState.isParentMode());
 
 

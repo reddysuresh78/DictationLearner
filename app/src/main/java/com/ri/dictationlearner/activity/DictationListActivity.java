@@ -25,7 +25,7 @@ import android.widget.Toast;
 import com.ri.dictationlearner.R;
 import com.ri.dictationlearner.activity.db.AndroidDatabaseManager;
 import com.ri.dictationlearner.activity.db.DatabaseHelper;
-import com.ri.dictationlearner.adapters.DictationsCursorAdapter;
+import com.ri.dictationlearner.adapters.DictationListAdapter;
 import com.ri.dictationlearner.domain.Dictation;
 import com.ri.dictationlearner.domain.GlobalState;
 import com.ri.dictationlearner.domain.Word;
@@ -37,11 +37,13 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
 
     private DatabaseHelper dbHelper;
 
-    DictationsCursorAdapter cursorAdapter = null;
+    DictationListAdapter cursorAdapter = null;
 
     ListView listView = null;
 
     Cursor  cursor = null;
+
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,14 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
         setContentView(R.layout.activity_dictation_list_container);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+//        if (findViewById(R.id.item_detail_container) != null) {
+//            // The detail container view will be present only in the
+//            // large-screen layouts (res/values-w900dp).
+//            // If this view is present, then the
+//            // activity should be in two-pane mode.
+//            mTwoPane = true;
+//        }
 
         Log.i(LOG_TAG,"OnCreate called");
 
@@ -69,16 +79,16 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
             public void onClick(View view) {
                 Log.d("MAIN","Trying to create new dictation");
                 Intent intent = new Intent(DictationListActivity.this, AddDictationActivity.class);
+                intent.putExtra("OPERATION", "NEW");
                 startActivity(intent);
             }
         });
 
         fab.setVisibility(GlobalState.isParentMode() ? View.VISIBLE: View.GONE );
 
-
         cursor = dbHelper.getDictationList();
 
-        cursorAdapter = new DictationsCursorAdapter(this, cursor, 0  );
+        cursorAdapter = new DictationListAdapter(this, cursor, 0  );
         cursorAdapter.setReadOnlyMode(!GlobalState.isParentMode());
 
 // Attach the adapter to a ListView
@@ -91,9 +101,14 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
                                     long id) {
                 cursor.moveToPosition(position);
                 Dictation dictation = DatabaseUtils.getDictation(cursor);  //(Dictation) listView.getItemAtPosition(position);
-                String title = dictation.getName();
-                Intent intent = new Intent(DictationListActivity.this, WordsListActivity.class);
+
+                Log.d("MAIN","Trying to view " + dictation.getName());
+
+                Intent intent = new Intent(DictationListActivity.this, AddDictationActivity.class);
+
                 intent.putExtra("DICTATION", dictation);
+                intent.putExtra("OPERATION", "VIEW");
+
                 startActivity(intent);
             }
         });
@@ -178,10 +193,21 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
         Intent intent = new Intent(DictationListActivity.this, AddDictationActivity.class);
 
         intent.putExtra("DICTATION", dictation);
+        intent.putExtra("OPERATION", "EDIT");
 
         startActivity(intent);
 
     }
+
+    public void showWordListOnClickHandler(View v) {
+        Dictation dictation = (Dictation) v.getTag();
+        String title = dictation.getName();
+        Intent intent = new Intent(DictationListActivity.this, WordsListActivity.class);
+        intent.putExtra("DICTATION", dictation);
+        startActivity(intent);
+    }
+
+
 
     public void deleteDictationOnClickHandler(View v) {
         showDialog(v);

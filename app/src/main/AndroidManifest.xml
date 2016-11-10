@@ -42,7 +42,8 @@
         <activity
             android:name=".activity.TestResultsSummaryActivity"
             android:label="@string/title_test_results"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:parentActivityName=".activity.DictationListActivity"/>
         <activity android:name=".activity.TestResultsActivity"
             android:parentActivityName=".activity.TestResultsSummaryActivity"
             android:launchMode="singleTop"/>

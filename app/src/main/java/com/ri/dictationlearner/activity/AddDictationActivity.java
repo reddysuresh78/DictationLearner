@@ -48,6 +48,8 @@ public class AddDictationActivity extends AppCompatActivity {
 
     private boolean mImageChanged = false;
 
+    private String currentOperation = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +61,11 @@ public class AddDictationActivity extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             if(extras != null) {
                 dictation =  (Dictation) extras.get("DICTATION");
+                currentOperation = extras.getString("OPERATION");
             }
+        }else{
+            currentOperation = savedInstanceState.getString("OPERATION");
+            dictation = savedInstanceState.getParcelable("DICTATION");
         }
 
         mImageChanged = false;
@@ -92,9 +98,13 @@ public class AddDictationActivity extends AppCompatActivity {
     // Menu icons are inflated just as they were with actionbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_new_item, menu);
-        return true;
+
+        if(!"VIEW".equalsIgnoreCase(currentOperation)) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.menu_add_new_item, menu);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -113,6 +123,37 @@ public class AddDictationActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        savedInstanceState.putString("OPERATION", currentOperation);
+        savedInstanceState.putParcelable( "DICTATION", dictation);
+
+        super.onSaveInstanceState(savedInstanceState);
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentOperation = savedInstanceState.getString("OPERATION");
+        dictation = savedInstanceState.getParcelable("DICTATION");
+        setCurrentTitle();
+    }
+
+    private void setCurrentTitle(){
+
+        if("NEW".equalsIgnoreCase(currentOperation)){
+            setTitle("New Dictation");
+        }else if("EDIT".equalsIgnoreCase(currentOperation)) {
+            setTitle("Edit Dictation Details");
+        }else{
+            setTitle("View Dictation Details");
+        }
+
+    }
+
 
     private void saveData() {
         Bitmap bm= null;
@@ -183,19 +224,27 @@ public class AddDictationActivity extends AppCompatActivity {
     }
 
     private void setValues() {
-        if(dictation != null) {
+
+
+        if("NEW".equalsIgnoreCase(currentOperation)) {
+            mIvDictationImage.setImageResource(R.drawable.ic_broken_image_white_48dp);
+            mIvDictationImage.setColorFilter(R.color.colorPrimary);
+
+            mIsEditing = false;
+        }else{
             mEtDictionaryName.setText(dictation.getName());
             mIvDictationImage.setImageResource(dictation.getImageResourceId());
             if(dictation.getImage() != null) {
                 mIvDictationImage.setImageBitmap(Utils.getImage(dictation.getImage()));
             }
             mIsEditing = true;
-            setTitle("Edit Dictation");
-        }else{
-            mIvDictationImage.setImageResource(R.drawable.ic_broken_image_white_48dp);
-            mIvDictationImage.setColorFilter(R.color.colorPrimary);
-            setTitle("New Dictation");
-            mIsEditing = false;
+
+            if("VIEW".equalsIgnoreCase(currentOperation)) {
+                mEtDictionaryName.setEnabled(false);
+                mIbSelectImage.setEnabled(false);
+            }
+
         }
+        setCurrentTitle();
     }
 }
