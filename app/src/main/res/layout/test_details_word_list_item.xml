@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/lbl_attempted_words"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_size_small"
         tools:text="Cat"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:textSize="16sp"
+        android:textSize="@dimen/text_size_small"
         tools:text="Cot"
 
         android:layout_alignBaseline="@+id/tvActualWord"

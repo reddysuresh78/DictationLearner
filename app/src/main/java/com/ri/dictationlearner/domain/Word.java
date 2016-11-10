@@ -14,8 +14,6 @@ public class Word implements Parcelable {
     private int imageResourceId;
     private int serialNo;
     private byte[] image ;
-
-
     private int wordId;
     private int dictationId;
 

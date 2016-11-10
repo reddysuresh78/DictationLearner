@@ -30,7 +30,7 @@ import com.ri.dictationlearner.domain.Dictation;
 import com.ri.dictationlearner.domain.GlobalState;
 import com.ri.dictationlearner.domain.Word;
 import com.ri.dictationlearner.utils.DatabaseUtils;
-import com.ri.dictationlearner.utils.Utils;
+import com.ri.dictationlearner.utils.ImageUtils;
 
 import java.util.Locale;
 
@@ -118,23 +118,16 @@ public class WordsListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 cursor.moveToPosition(position);
-                Word word = DatabaseUtils.getWord(cursor);  //(Dictation) listView.getItemAtPosition(position);
+                Word word = DatabaseUtils.getWord(cursor);
 
-                String title = word.getWord();
                 Intent intent = new Intent(WordsListActivity.this, WordDetailActivity.class);
                 intent.putExtra("CURRENT_WORD_INDEX", position);
-
                 intent.putExtra("WORD", word);
-
                 intent.putExtra("NAME", dictation.getName());
-                intent.putExtra("CURRENT_MODE", "SHOW"); //TODO Fix it
-
+                intent.putExtra("CURRENT_MODE", "SHOW");
                 startActivity(intent);
             }
         });
-
-
-
         initializeSpeech();
     }
 
@@ -170,26 +163,10 @@ public class WordsListActivity extends AppCompatActivity {
 
         cursorAdapter.changeCursor(cursor);
 
-        Toast.makeText(this,"Word Deleted dict/word " + dictation.getId() + "/" + word.getWordId(),Toast.LENGTH_LONG ).show();
+        Toast.makeText(this,"Word Deleted",Toast.LENGTH_LONG ).show();
 
     }
 
-
-//    @Override
-//    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
-//
-//        if (savedInstanceState != null) {
-//
-//            Log.d(LOG_TAG , "savedInstanceState  " + savedInstanceState);
-//
-//
-//            dictation  = (Dictation) savedInstanceState.get("DICTATION");
-//            Log.d("TT" , "Dictataion name " + dictation.getName());
-//
-//        }
-//
-//        super.onRestoreInstanceState(savedInstanceState, persistentState);
-//    }
 
     public void playSoundOnClickHandler(View v) {
         Word word = (Word)v.getTag();
@@ -213,8 +190,6 @@ public class WordsListActivity extends AppCompatActivity {
         intent.putExtra("WORD", word);
 
         startActivity(intent);
-
-//        showImageClickHandler(v);
 
     }
 
@@ -276,7 +251,7 @@ public class WordsListActivity extends AppCompatActivity {
             if(image!=null && image.length >0) {
 
                 ImageView imageView = new ImageView(this);
-                imageView.setImageBitmap(Utils.getImage(image));
+                imageView.setImageBitmap(ImageUtils.getImage(image));
 
                 imagePresent = true;
                 builder.addContentView(imageView, new RelativeLayout.LayoutParams(

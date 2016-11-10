@@ -22,11 +22,13 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class TestResultsActivity extends AppCompatActivity {
 
-    private TestResultSummaryItem summaryItem;
+    private static final String LOG_TAG = "TestResultsActivity";
+
+    private TestResultSummaryItem mSummaryItem;
 
     private DatabaseHelper dbHelper;
 
-    private String dictationName = "";
+    private String mDictationName = "";
 
 
     @Override
@@ -38,18 +40,18 @@ public class TestResultsActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
-                dictationName = extras.getString(EXTRA_MESSAGE);
-                summaryItem = (TestResultSummaryItem) extras.get("TEST");
+                mDictationName = extras.getString(EXTRA_MESSAGE);
+                mSummaryItem = (TestResultSummaryItem) extras.get("TEST");
             }
 
         } else {
-            dictationName = savedInstanceState.getString("title");
-            summaryItem = (TestResultSummaryItem) savedInstanceState.get("TEST");
-            Log.d("TT", "Dictation name " + dictationName);
+            mDictationName = savedInstanceState.getString("title");
+            mSummaryItem = (TestResultSummaryItem) savedInstanceState.get("TEST");
+            Log.d(LOG_TAG, "Dictation name " + mDictationName);
 
         }
 
-        setTitle("Test Details for " + dictationName);
+        setTitle("Test Details for " + mDictationName);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -74,22 +76,16 @@ public class TestResultsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
                 TestHistoryItem testHistoryItem= (TestHistoryItem) listView.getItemAtPosition(position);
-//                String title = word.getWord();
                 Intent intent = new Intent(TestResultsActivity.this, TestWordDetailsActivity.class);
-
-
-                intent.putExtra("DICTATION_NAME", dictationName);
-//                intent.putExtra("TEST_DATE", testHistoryItem.getDate()); //TODO commented
+                intent.putExtra("DICTATION_NAME", mDictationName);
                 intent.putExtra("TEST", testHistoryItem);
                 startActivity(intent);
             }
         });
-
-
     }
     private ArrayList<TestHistoryItem> populateHistoryItems() {
         ArrayList<TestHistoryItem> testItems = new ArrayList<>();
-        Cursor cursor = dbHelper.getTestsForDictation(summaryItem.getDictationId());
+        Cursor cursor = dbHelper.getTestsForDictation(mSummaryItem.getDictationId());
         //_id, dict_id, total_count, attempt_count, correct_count, wrong_count
         if(cursor != null && cursor.getCount() > 0 ) {
             cursor.moveToFirst();
@@ -106,7 +102,7 @@ public class TestResultsActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putString("title", this.getTitle().toString());
-        savedInstanceState.putParcelable( "TEST", summaryItem);
+        savedInstanceState.putParcelable( "TEST", mSummaryItem);
 
         super.onSaveInstanceState(savedInstanceState);
 
@@ -116,7 +112,7 @@ public class TestResultsActivity extends AppCompatActivity {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         String title = savedInstanceState.getString("title");
-        summaryItem = savedInstanceState.getParcelable("TEST");
+        mSummaryItem = savedInstanceState.getParcelable("TEST");
         setTitle(title);
     }
 

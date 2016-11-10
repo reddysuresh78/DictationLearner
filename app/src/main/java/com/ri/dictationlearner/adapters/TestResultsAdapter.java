@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 public class TestResultsAdapter extends ArrayAdapter<TestHistoryItem> {
 
+    private static final String LOG_TAG = "TestResultsAdapter";
+
 
     // View lookup cache
     private static class ViewHolder {

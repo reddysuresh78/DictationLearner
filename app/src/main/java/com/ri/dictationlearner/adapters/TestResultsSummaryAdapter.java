@@ -10,11 +10,13 @@ import android.widget.TextView;
 
 import com.ri.dictationlearner.R;
 import com.ri.dictationlearner.domain.TestResultSummaryItem;
-import com.ri.dictationlearner.utils.Utils;
+import com.ri.dictationlearner.utils.ImageUtils;
 
 import java.util.ArrayList;
 
 public class TestResultsSummaryAdapter extends ArrayAdapter<TestResultSummaryItem> {
+
+    private static final String LOG_TAG = "TestResSumAdapter";
 
     // View lookup cache
     private static class ViewHolder {
@@ -54,7 +56,7 @@ public class TestResultsSummaryAdapter extends ArrayAdapter<TestResultSummaryIte
         viewHolder.latestScore.setText("" +testResultSummaryItem.getLatestScore() + "/" + testResultSummaryItem.getTotalCount());
 
         if(testResultSummaryItem.getImage() != null ) {
-            viewHolder.icon.setImageBitmap(Utils.getImage(testResultSummaryItem.getImage()));
+            viewHolder.icon.setImageBitmap(ImageUtils.getImage(testResultSummaryItem.getImage()));
         }else{
             viewHolder.icon.setImageResource(R.drawable.ic_broken_image_white_48dp);
         }

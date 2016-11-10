@@ -34,8 +34,10 @@
         <activity
             android:name=".activity.WordDetailActivity"
             android:parentActivityName=".activity.WordsListActivity" />
-        <activity android:name=".activity.AddDictationActivity"
+
+        <activity android:name=".activity.DictationDetailActivity"
             android:parentActivityName=".activity.DictationListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             />
         <activity android:name=".activity.AddWordActivity"
             android:parentActivityName=".activity.WordsListActivity"/>

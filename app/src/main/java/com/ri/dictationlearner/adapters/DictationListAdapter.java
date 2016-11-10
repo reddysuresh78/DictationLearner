@@ -13,9 +13,11 @@ import android.widget.TextView;
 import com.ri.dictationlearner.R;
 import com.ri.dictationlearner.domain.Dictation;
 import com.ri.dictationlearner.utils.DatabaseUtils;
-import com.ri.dictationlearner.utils.Utils;
+import com.ri.dictationlearner.utils.ImageUtils;
 
 public class DictationListAdapter extends CursorAdapter {
+
+    private static final String LOG_TAG = "DictationListAdapter";
 
     private boolean mReadOnlyMode = true;
 
@@ -25,6 +27,7 @@ public class DictationListAdapter extends CursorAdapter {
         TextView name;
         TextView testDate;
         TextView wordCount;
+        TextView wordCountLabel;
         ImageButton editDictation;
         ImageButton deleteDictation;
         ImageButton takeTest;
@@ -32,17 +35,13 @@ public class DictationListAdapter extends CursorAdapter {
         ImageButton showWordsList;
     }
 
-
     // Default constructor
     public DictationListAdapter(Context context, Cursor cursor, int flags) {
         super(context, cursor, flags);
     }
 
-
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-//        View convertView = ((LayoutInflater) context
-//                .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dictation_list_item, viewGroup, false);
 
         ViewHolder viewHolder = new ViewHolder();
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -51,6 +50,7 @@ public class DictationListAdapter extends CursorAdapter {
         viewHolder.name = (TextView) convertView.findViewById(R.id.tvName);
         viewHolder.testDate = (TextView) convertView.findViewById(R.id.tvTestDate);
         viewHolder.wordCount = (TextView) convertView.findViewById(R.id.tvWordCount);
+        viewHolder.wordCountLabel = (TextView) convertView.findViewById(R.id.tvLblWordCount);
         viewHolder.icon = (ImageView) convertView.findViewById(R.id.ivIcon);
         viewHolder.editDictation = (ImageButton) convertView.findViewById(R.id.ibEditDictation);
 
@@ -61,7 +61,6 @@ public class DictationListAdapter extends CursorAdapter {
         viewHolder.practiceDictation= (ImageButton) convertView.findViewById(R.id.ibPracticeDictation);
 
         viewHolder.showWordsList= (ImageButton) convertView.findViewById(R.id.ibShowWordList);
-
 
         // Cache the viewHolder object inside the fresh view
         convertView.setTag(viewHolder);
@@ -76,12 +75,16 @@ public class DictationListAdapter extends CursorAdapter {
         Dictation dictation = DatabaseUtils.getDictation(cursor);
 
         viewHolder.name.setText(dictation.getName());
-//        viewHolder.testDate.setText(Utils.getFormattedDate(dictation.getTestDate()));
         viewHolder.wordCount.setText("" +dictation.getWordCount());
 
+        if(dictation.getWordCount() == 1) {
+            viewHolder.wordCountLabel.setText("word");
+        }else{
+            viewHolder.wordCountLabel.setText("words");
+        }
 
         if(dictation.getImage() != null ) {
-            viewHolder.icon.setImageBitmap(Utils.getImage(dictation.getImage()));
+            viewHolder.icon.setImageBitmap(ImageUtils.getImage(dictation.getImage()));
         }else{
             viewHolder.icon.setImageResource(dictation.getImageResourceId());
         }

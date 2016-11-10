@@ -29,7 +29,8 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
-
+//This is copied from internet to check the data of internal SQLite database. this should be
+//removed before the app is deployed on playstore
 public class AndroidDatabaseManager extends Activity implements OnItemClickListener {
 
 //a static class to save cursor,table values etc which is used by functions to share data in the program.

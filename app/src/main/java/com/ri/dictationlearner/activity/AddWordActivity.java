@@ -25,28 +25,21 @@ import android.widget.Toast;
 import com.ri.dictationlearner.R;
 import com.ri.dictationlearner.activity.db.DatabaseHelper;
 import com.ri.dictationlearner.domain.Word;
-import com.ri.dictationlearner.utils.Utils;
+import com.ri.dictationlearner.utils.ImageUtils;
 
-import static com.ri.dictationlearner.utils.Utils.resizeBitmap;
+import static com.ri.dictationlearner.utils.ImageUtils.resizeBitmap;
 
 public class AddWordActivity extends AppCompatActivity {
 
-    private static final String TAG = "AddWordActivity";
+    private static final String LOG_TAG = "AddWordActivity";
     private static int RESULT_LOAD_IMAGE = 1;
-
     private Word word;
-
     private EditText mEtWord;
-
     private ImageButton mIbSelectImage;
-
     private ImageView mIvWordImage;
-
     private DatabaseHelper dbHelper;
     private boolean mImageChanged = false;
-
     private boolean mIsEditing = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +66,7 @@ public class AddWordActivity extends AppCompatActivity {
         mIbSelectImage.setOnClickListener(new View.OnClickListener() {
                                               @Override
                                               public void onClick(View view) {
-
-                                                  if (!isStorageReadPermissionGranted())
+                                                 if (!isStorageReadPermissionGranted())
                                                       return;
 
                                                   Intent i = new Intent(
@@ -86,7 +78,6 @@ public class AddWordActivity extends AppCompatActivity {
                                           }
 
         );
-
         setValues();
     }
 
@@ -95,7 +86,7 @@ public class AddWordActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_new_item, menu);
+        getMenuInflater().inflate(R.menu.menu_save_cancel_item, menu);
         return true;
     }
 
@@ -129,12 +120,12 @@ public class AddWordActivity extends AppCompatActivity {
         }
 
         if(!mIsEditing) {
-            long id = dbHelper.addWord(word.getDictationId(),  mEtWord.getText().toString(), word.getSerialNo(), bm != null ? Utils.getBytes(bm) : null);
-            Toast.makeText(this,"added word/dict " + id + "/" + word.getDictationId(),Toast.LENGTH_LONG ).show();
+            long id = dbHelper.addWord(word.getDictationId(),  mEtWord.getText().toString(), word.getSerialNo(), bm != null ? ImageUtils.getBytes(bm) : null);
+            Toast.makeText(this,"added word successfully",Toast.LENGTH_LONG ).show();
         }else{
             boolean updateFlag = dbHelper.updateWord(word.getDictationId(), word.getWordId(),mEtWord.getText().toString(), null
-                    , mImageChanged ? Utils.getBytes(bm) : null);
-            Toast.makeText(this,"updated word/dict " + word.getWordId() + "/" + word.getDictationId() + "/" + updateFlag,Toast.LENGTH_LONG ).show();
+                    , mImageChanged ? ImageUtils.getBytes(bm) : null);
+            Toast.makeText(this,"updated word successfully",Toast.LENGTH_LONG ).show();
         }
     }
 
@@ -144,15 +135,15 @@ public class AddWordActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG, "Permission is granted");
+                Log.v(LOG_TAG, "Permission is granted");
                 return true;
             } else {
-                Log.v(TAG, "Permission is revoked");
+                Log.v(LOG_TAG, "Permission is revoked");
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 return false;
             }
         } else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG, "Permission is granted");
+            Log.v(LOG_TAG, "Permission is granted");
             return true;
         }
     }
@@ -183,7 +174,7 @@ public class AddWordActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.v(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
+            Log.v(LOG_TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
             //resume tasks needing this permission
             mIbSelectImage.performClick();
         }
@@ -196,7 +187,7 @@ public class AddWordActivity extends AppCompatActivity {
             mIvWordImage.setColorFilter(R.color.colorPrimary);
             setTitle("Edit Word");
             if(word.getImage() != null) {
-                mIvWordImage.setImageBitmap(Utils.getImage(word.getImage()));
+                mIvWordImage.setImageBitmap(ImageUtils.getImage(word.getImage()));
             }
             mIsEditing = true;
 

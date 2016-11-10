@@ -3,6 +3,8 @@ package com.ri.dictationlearner.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ri.dictationlearner.R;
+
 /**
  * Created by Suresh on 30-09-2016.
  */
@@ -17,7 +19,7 @@ public class Dictation implements Parcelable {
     private byte[] image ;
 
 
-    private int imageResourceId;
+    private int imageResourceId = R.drawable.ic_broken_image_black_48dp;
 
     public Dictation(){
 

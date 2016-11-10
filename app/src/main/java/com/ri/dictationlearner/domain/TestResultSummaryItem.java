@@ -11,12 +11,12 @@ import java.util.Arrays;
 
 public class TestResultSummaryItem implements Parcelable {
 
-    int dictationId;
-    int testId;
+    private int dictationId;
+    private int testId;
     private byte[] image ;
     private String name;
-    int latestScore;
-    int totalCount;
+    private int latestScore;
+    private int totalCount;
 
     public int getTotalCount() {
         return totalCount;

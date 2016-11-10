@@ -376,6 +376,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    //This method should be removed before app is deployed on play store.
     public ArrayList<Cursor> getData(String Query){
         //get writable database
         SQLiteDatabase sqlDB = this.getWritableDatabase();

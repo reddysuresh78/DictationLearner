@@ -7,10 +7,9 @@ package com.ri.dictationlearner.domain;
 public class TestHistoryWordDetails {
 
 
-    String actualWord;
-    String enteredWord;
-    boolean correctIndicator;
-
+    private String actualWord;
+    private String enteredWord;
+    private boolean correctIndicator;
 
     public String getActualWord() {
         return actualWord;

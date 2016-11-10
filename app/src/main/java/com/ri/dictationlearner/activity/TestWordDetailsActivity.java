@@ -3,7 +3,6 @@ package com.ri.dictationlearner.activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ListView;
 
 import com.ri.dictationlearner.R;
@@ -19,9 +18,8 @@ public class TestWordDetailsActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
 
-    private TestHistoryItem historyItem;
+    private TestHistoryItem mHistoryItem;
 
-    private String dictationName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,24 +27,18 @@ public class TestWordDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test_word_details);
 
         String dictationName = "";
-        String testDate = "";
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
                 dictationName = extras.getString("DICTATION_NAME");
-                historyItem= (TestHistoryItem) extras.get("TEST");
+                mHistoryItem = (TestHistoryItem) extras.get("TEST");
             }
-
         } else {
-
             dictationName = savedInstanceState.getString("DICTATION_NAME");
-            historyItem= (TestHistoryItem) savedInstanceState.get("TEST");
-
-            Log.d("TT", "Dictation name " + dictationName);
-
+            mHistoryItem = (TestHistoryItem) savedInstanceState.get("TEST");
         }
 
-        setTitle(dictationName + " on " + historyItem.getTestDate());
+        setTitle(dictationName + " on " + mHistoryItem.getTestDate());
 
         dbHelper = new DatabaseHelper(this);
 
@@ -66,7 +58,7 @@ public class TestWordDetailsActivity extends AppCompatActivity {
     private ArrayList<TestHistoryWordDetails> populateHistoryWordItems() {
         ArrayList<TestHistoryWordDetails> testItems = new ArrayList<>();
         testItems.add(new TestHistoryWordDetails( ).setActualWord("Actual").setEnteredWord("Entered").setCorrectIndicator(true));
-        Cursor cursor = dbHelper.getTestHistoryWordDetails(historyItem.getTestId());
+        Cursor cursor = dbHelper.getTestHistoryWordDetails(mHistoryItem.getTestId());
         //_id, dict_id, total_count, attempt_count, correct_count, wrong_count
         if(cursor != null && cursor.getCount() > 0 ) {
             cursor.moveToFirst();
@@ -83,7 +75,7 @@ public class TestWordDetailsActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putString("title", this.getTitle().toString());
-        savedInstanceState.putParcelable( "TEST", historyItem);
+        savedInstanceState.putParcelable( "TEST", mHistoryItem);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -91,7 +83,7 @@ public class TestWordDetailsActivity extends AppCompatActivity {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         String title = savedInstanceState.getString("title");
-        historyItem = savedInstanceState.getParcelable("TEST");
+        mHistoryItem = savedInstanceState.getParcelable("TEST");
         setTitle(title);
     }
 

@@ -20,7 +20,7 @@
         android:hint="@string/enter_word"
         android:layout_alignParentTop="true"
         android:layout_margin="4dp"
-        android:textSize="36sp"
+        android:textSize="@dimen/text_size_large"
         android:layout_centerHorizontal="true"
         />
 
@@ -45,8 +45,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:src="@drawable/pig"
-        tools:src="@drawable/pig"
+        android:src="@drawable/ic_broken_image_black_48dp"
+        tools:src="@drawable/ic_broken_image_black_48dp"
         android:background="@android:color/transparent"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
@@ -91,6 +91,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_toLeftOf="@+id/ibEditWord"
+        android:layout_toStartOf="@+id/ibEditWord"
         android:layout_margin="8dp"
         android:src="@drawable/ic_first_page_white_24dp"
         tools:src="@drawable/ic_first_page_white_24dp"
@@ -103,6 +104,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_toLeftOf="@+id/ibEditWord"
+        android:layout_toStartOf="@+id/ibEditWord"
         android:layout_margin="8dp"
         android:src="@drawable/ic_chevron_left_white_24dp"
         tools:src="@drawable/ic_chevron_left_white_24dp"
@@ -115,8 +117,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivIconHolder"
+        android:layout_toEndOf="@+id/ivIconHolder"
         android:layout_margin="4dp"
-        android:textSize="24sp"
+        android:textSize="@dimen/text_size_medium"
         tools:text="Sunday"
         android:textColor="@android:color/primary_text_light"
         />
@@ -127,6 +130,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_toLeftOf="@+id/ibEditWord"
+        android:layout_toStartOf="@+id/ibEditWord"
         android:layout_margin="8dp"
         android:src="@drawable/ic_chevron_right_white_24dp"
         tools:src="@drawable/ic_chevron_right_white_24dp"
@@ -139,6 +143,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_toLeftOf="@+id/ibEditWord"
+        android:layout_toStartOf="@+id/ibEditWord"
         android:layout_margin="8dp"
         android:src="@drawable/ic_last_page_white_24dp"
         tools:src="@drawable/ic_last_page_white_24dp"

@@ -18,6 +18,7 @@ import java.util.Date;
 
 public class DatabaseUtils {
 
+    private DatabaseUtils(){}
 
     public static Dictation getDictation(Cursor cursor) {
 

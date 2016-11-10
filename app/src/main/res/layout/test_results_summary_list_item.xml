@@ -24,7 +24,7 @@
             android:layout_height="48dp"
             android:layout_width="match_parent"
             android:id="@+id/ivIcon"
-            android:src="@drawable/animal"
+            android:src="@drawable/ic_broken_image_black_48dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true">
         </ImageView>
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivIconHolder"
         android:layout_margin="4dp"
-        android:textSize="24sp"
+        android:textSize="@dimen/text_size_medium"
         tools:text="Colors"
         android:textColor="@android:color/primary_text_light"
         />
@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:textSize="16sp"
+        android:textSize="@dimen/text_size_small"
         tools:text="11/12"
         android:layout_marginLeft="11dp"
         android:layout_marginStart="11dp"

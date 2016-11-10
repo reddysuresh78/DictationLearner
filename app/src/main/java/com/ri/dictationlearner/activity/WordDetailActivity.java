@@ -19,11 +19,11 @@ import com.ri.dictationlearner.activity.db.DatabaseHelper;
 import com.ri.dictationlearner.domain.GlobalState;
 import com.ri.dictationlearner.domain.Word;
 import com.ri.dictationlearner.utils.DatabaseUtils;
-import com.ri.dictationlearner.utils.Utils;
+import com.ri.dictationlearner.utils.ImageUtils;
 
 import java.util.Locale;
 
-//TODO: Home button from this activity makes the word list activity loose its title.
+
 public class WordDetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "WordDetailActivity";
@@ -32,7 +32,6 @@ public class WordDetailActivity extends AppCompatActivity {
 
     private String mCurrentMode;
 
-//    private List<Word> mAllWords = null;
     private int mCurrentWordIndex = -1;
     private EditText edWord;
     private TextView tvWordIndex;
@@ -67,7 +66,6 @@ public class WordDetailActivity extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             if(extras != null) {
                 mCurrentWordIndex =  extras.getInt("CURRENT_WORD_INDEX");
-//                mAllWords = (List<Word>) extras.get("ALL_WORDS");
                 mCurrentMode = extras.getString("CURRENT_MODE");
                 word =(Word) extras.get("WORD");
                 dictationName =   extras.getString("NAME");
@@ -95,7 +93,6 @@ public class WordDetailActivity extends AppCompatActivity {
         cursor = dbHelper.getWordList(word.getDictationId());
 
         edWord = (EditText) findViewById(R.id.etWord);
-//        edWord.setFocusable(false);
 
         tvWordIndex = (TextView) findViewById(R.id.tvWordIndex);
 
@@ -127,8 +124,6 @@ public class WordDetailActivity extends AppCompatActivity {
                         finish();
                         return;
                     }
-
-
                 }
 
                 if(mCurrentWordIndex < cursor.getCount() -1) {
@@ -186,7 +181,6 @@ public class WordDetailActivity extends AppCompatActivity {
                     edWord.setText(word.getWord());
                     edWord.setFocusable(false);
                     ibToggleWordButton.setTag("Showing");
-//                    edWord.requestFocus();
                 }
             }
         });
@@ -269,12 +263,7 @@ public class WordDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-//                if (getParentActivityIntent() == null) {
-//                    Log.i(TAG, "You have forgotten to specify the parentActivityName in the AndroidManifest!");
-//                    onBackPressed();
-//                } else {
-                    NavUtils.navigateUpFromSameTask(this);
-//                }
+                NavUtils.navigateUpFromSameTask(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -330,11 +319,6 @@ public class WordDetailActivity extends AppCompatActivity {
 
         if(mCurrentMode.equalsIgnoreCase("TEST")) {
             edWord.setText("");
-//            edWord.setFocusable(true);
-//            if(edWord.requestFocus()) {
-//                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-//            }
-//            edWord.requestFocus();
         }else{
             edWord.setText(word.getWord());
             edWord.setFocusable(false);
@@ -346,10 +330,8 @@ public class WordDetailActivity extends AppCompatActivity {
 
 
         if(word.getImage() != null) {
-            ivWordImage.setImageBitmap(Utils.getImage(word.getImage()));
+            ivWordImage.setImageBitmap(ImageUtils.getImage(word.getImage()));
         }
-
-//        setTitle(mAllWords.get(mCurrentWordIndex).getWord());
     }
 
     private void adjustControls(){

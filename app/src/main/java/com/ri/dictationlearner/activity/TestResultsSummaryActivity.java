@@ -24,9 +24,9 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class  TestResultsSummaryActivity extends AppCompatActivity    {
 
-    private DatabaseHelper dbHelper;
-
     private static final String LOG_TAG = "TestResultsSummary";
+
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,6 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
 
         // Construct the data source
         ArrayList<TestResultSummaryItem> summaryItems = populateSummaryItems();
-
 
         // Attach the adapter to a ListView
 
