@@ -103,8 +103,10 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
             while (!cursor.isAfterLast()) {
                 TestResultSummaryItem summaryItem = DatabaseUtils.getTestSummary(cursor);
                 Dictation dictation = dictations.get(summaryItem.getDictationId());
-                summaryItem.setImage(dictation.getImage());
-                summaryItem.setName(dictation.getName());
+                if(dictation != null) {
+                    summaryItem.setImage(dictation.getImage());
+                    summaryItem.setName(dictation.getName());
+                }
                 cursor.moveToNext();
                 summaryItems.add(summaryItem);
             }
