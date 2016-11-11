@@ -15,6 +15,12 @@ Features:
 5.	Test results are displayed along with best score of the student for each dictation list
 6.	The test history of each dictation along with which words are correct are shown
 
+The demo video is available below 
+
+Demo Video 
+
+(./demo/Video.mp4)
+
 Here are screenshots of the application. 
 
 ![Image 1](./demo/Screenshot_20161016-173044.png)
