@@ -312,6 +312,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+
+    public Cursor getDictationImage(final int dictationID) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        return db.rawQuery("SELECT dict_image FROM dictations WHERE _id = ?",
+                new String[] { String.valueOf( dictationID)  });
+
+    }
+
     public long addWord(int dictationId, String word, int order,  byte[] image ) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -409,7 +419,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             return alc;
         } catch(SQLException sqlEx){
-            Log.d("printing exception", sqlEx.getMessage());
+            Log.d(LOG_TAG, sqlEx.getMessage());
             //if any exceptions are triggered save the error message to cursor an return the arraylist
             Cursor2.addRow(new Object[] { ""+sqlEx.getMessage() });
             alc.set(1,Cursor2);

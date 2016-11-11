@@ -107,7 +107,7 @@ public class Word implements Parcelable {
         dest.writeInt(this.audioResourceId);
         dest.writeInt(this.imageResourceId);
         dest.writeInt(this.serialNo);
-        dest.writeByteArray(this.image);
+//        dest.writeByteArray(this.image);
         dest.writeInt(this.wordId);
         dest.writeInt(this.dictationId);
     }
@@ -117,7 +117,7 @@ public class Word implements Parcelable {
         this.audioResourceId = in.readInt();
         this.imageResourceId = in.readInt();
         this.serialNo = in.readInt();
-        this.image = in.createByteArray();
+//        this.image = in.createByteArray();
         this.wordId = in.readInt();
         this.dictationId = in.readInt();
     }

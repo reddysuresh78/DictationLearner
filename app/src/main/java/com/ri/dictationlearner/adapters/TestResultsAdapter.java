@@ -49,9 +49,7 @@ public class TestResultsAdapter extends ArrayAdapter<TestHistoryItem> {
             viewHolder.attemptedWordCount = (TextView) convertView.findViewById(R.id.tvAttemptedWordCount);
             viewHolder.correctWordCount = (TextView) convertView.findViewById(R.id.tvCorrectWordCount);
             viewHolder.wrongWordCount= (TextView) convertView.findViewById(R.id.tvWrongWordCount);
-
-            Log.d("T", viewHolder.totalWordCount + "");
-
+ 
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
         } else {

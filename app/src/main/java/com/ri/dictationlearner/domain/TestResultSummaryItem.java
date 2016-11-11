@@ -92,7 +92,7 @@ public class TestResultSummaryItem implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.dictationId);
         dest.writeInt(this.testId);
-        dest.writeByteArray(this.image);
+//        dest.writeByteArray(this.image);
         dest.writeString(this.name);
         dest.writeInt(this.latestScore);
         dest.writeInt(this.totalCount);
@@ -104,7 +104,7 @@ public class TestResultSummaryItem implements Parcelable {
     protected TestResultSummaryItem(Parcel in) {
         this.dictationId = in.readInt();
         this.testId = in.readInt();
-        this.image = in.createByteArray();
+//        this.image = in.createByteArray();
         this.name = in.readString();
         this.latestScore = in.readInt();
         this.totalCount = in.readInt();

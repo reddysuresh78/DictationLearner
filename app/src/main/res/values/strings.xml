@@ -95,6 +95,22 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_word_confirm">added word successfully</string>
+    <string name="update_word_confirm">updated word successfully</string>
+    <string name="add_dict_confirm">Dictation Added</string>
+    <string name="update_dict_confirm">Dictation Updated</string>
+    <string name="restart_warning">"Please restart app to apply "</string>
+    <string name="restart_warning_generic">Please restart app to apply the changes</string>
+    <string name="parent_mode_label">Parent Mode</string>
+    <string name="child_mode_label">Child Mode</string>
+    <string name="delete_dictation_confirm">Dictation Deleted</string>
+    <string name="no_word_warning">There are no words in this dictation</string>
+    <string name="test_done_confirm">You are done with the test</string>
+    <string name="type_word">Please type the word</string>
+    <string name="correct_confirm">You are right</string>
+    <string name="wrong_confirm">You are wrong. Try again.</string>
+    <string name="delete_word_confirm">Word Deleted</string>
+    <string name="no_pic_warning">No picture present for this word</string>
 
 
 </resources>

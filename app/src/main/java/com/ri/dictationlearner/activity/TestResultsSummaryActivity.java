@@ -1,9 +1,13 @@
 package com.ri.dictationlearner.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,7 +30,11 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
 
     private static final String LOG_TAG = "TestResultsSummary";
 
-    private DatabaseHelper dbHelper;
+    private ProgressDialog mProgressDialog;
+
+    private DatabaseHelper mDBHelper;
+
+    private ListView mListView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +45,23 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        dbHelper = new DatabaseHelper(this);
+        mDBHelper = new DatabaseHelper(this);
 
         // Construct the data source
-        ArrayList<TestResultSummaryItem> summaryItems = populateSummaryItems();
+        ArrayList<TestResultSummaryItem> summaryItems = new ArrayList<>();
 
         // Attach the adapter to a ListView
 
         TestResultsSummaryAdapter adapter = new TestResultsSummaryAdapter(this, summaryItems );
 
-        final ListView listView = (ListView) findViewById(R.id.lv_test_dictation_summary);
-        listView.setAdapter(adapter);
+        mListView = (ListView) findViewById(R.id.lv_test_dictation_summary);
+        mListView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                TestResultSummaryItem testResultSummaryItem = (TestResultSummaryItem) listView.getItemAtPosition(position);
+                TestResultSummaryItem testResultSummaryItem = (TestResultSummaryItem) mListView.getItemAtPosition(position);
                 String title = testResultSummaryItem.getName();
                 Intent intent = new Intent(TestResultsSummaryActivity.this, TestResultsActivity.class);
                 intent.putExtra(EXTRA_MESSAGE, title);
@@ -64,9 +72,19 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
 
     }
 
+    public void onResume(){
+        super.onResume();
+
+        Log.d(LOG_TAG, "OnResume is called");
+
+        GetTestSummaryAsyncTask dbTask = new GetTestSummaryAsyncTask(this);
+        dbTask.execute();
+
+    }
+
     private ArrayList<TestResultSummaryItem> populateSummaryItems() {
         ArrayList<TestResultSummaryItem> summaryItems = new ArrayList<>();
-        Cursor cursor = dbHelper.getDictationList();
+        Cursor cursor = mDBHelper.getDictationList();
 
         Map<Integer, Dictation> dictations = new HashMap <Integer, Dictation>();
         if(cursor != null && cursor.getCount() > 0 ) {
@@ -79,7 +97,7 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
         }
         cursor.close();
         //_id, dict_id, total_count, correct_count
-        cursor = dbHelper.getAllTestsList();
+        cursor = mDBHelper.getAllTestsList();
         if(cursor != null && cursor.getCount() > 0 ) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -98,6 +116,42 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return false;
+    }
+
+    public class GetTestSummaryAsyncTask extends AsyncTask<String, Void, ArrayList<TestResultSummaryItem>> {
+        private Context mContext;
+
+        public GetTestSummaryAsyncTask(Context context ) {
+            mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(TestResultsSummaryActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
+            //android.R.style.Theme_DeviceDefault_Dialog_Alert);
+            mProgressDialog.setTitle("Please wait");
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.setMessage("Retrieving...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setInverseBackgroundForced(true);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected ArrayList<TestResultSummaryItem> doInBackground(String... strings) {
+            return populateSummaryItems();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<TestResultSummaryItem> summaryItems) {
+            // Attach the adapter to a ListView
+            TestResultsSummaryAdapter adapter = new TestResultsSummaryAdapter(mContext, summaryItems );
+            mListView.setAdapter(adapter);
+            mProgressDialog.dismiss();
+         }
+
     }
 
 }

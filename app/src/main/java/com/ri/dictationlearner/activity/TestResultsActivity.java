@@ -1,7 +1,10 @@
 package com.ri.dictationlearner.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,11 +27,15 @@ public class TestResultsActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "TestResultsActivity";
 
+    private ProgressDialog mProgressDialog;
+
     private TestResultSummaryItem mSummaryItem;
 
-    private DatabaseHelper dbHelper;
+    private DatabaseHelper mDBHelper;
 
     private String mDictationName = "";
+
+    private ListView mListView;
 
 
     @Override
@@ -55,27 +62,23 @@ public class TestResultsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        dbHelper = new DatabaseHelper(this);
+        mDBHelper = new DatabaseHelper(this);
 
         // Construct the data source
-        final ArrayList<TestHistoryItem> historyItems = populateHistoryItems();
-
-//        historyItems.add(new TestHistoryItem().setDate("12-Sep-2016").setTotal(8).setAttempted(8).setCorrect(7));
-//        historyItems.add(new TestHistoryItem().setDate("11-Sep-2016").setTotal(8).setAttempted(6).setCorrect(6));
-//        historyItems.add(new TestHistoryItem().setDate("09-Sep-2016").setTotal(8).setAttempted(4).setCorrect(2));
+        final ArrayList<TestHistoryItem> historyItems = new ArrayList<>();
 
 // Create the adapter to convert the array to views
         TestResultsAdapter adapter = new TestResultsAdapter(this, historyItems);
 
 // Attach the adapter to a ListView
-        final ListView listView = (ListView) findViewById(R.id.lv_dictation_test_history);
-        listView.setAdapter(adapter);
+        mListView = (ListView) findViewById(R.id.lv_dictation_test_history);
+        mListView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                TestHistoryItem testHistoryItem= (TestHistoryItem) listView.getItemAtPosition(position);
+                TestHistoryItem testHistoryItem= (TestHistoryItem) mListView.getItemAtPosition(position);
                 Intent intent = new Intent(TestResultsActivity.this, TestWordDetailsActivity.class);
                 intent.putExtra("DICTATION_NAME", mDictationName);
                 intent.putExtra("TEST", testHistoryItem);
@@ -85,7 +88,7 @@ public class TestResultsActivity extends AppCompatActivity {
     }
     private ArrayList<TestHistoryItem> populateHistoryItems() {
         ArrayList<TestHistoryItem> testItems = new ArrayList<>();
-        Cursor cursor = dbHelper.getTestsForDictation(mSummaryItem.getDictationId());
+        Cursor cursor = mDBHelper.getTestsForDictation(mSummaryItem.getDictationId());
         //_id, dict_id, total_count, attempt_count, correct_count, wrong_count
         if(cursor != null && cursor.getCount() > 0 ) {
             cursor.moveToFirst();
@@ -116,4 +119,49 @@ public class TestResultsActivity extends AppCompatActivity {
         setTitle(title);
     }
 
+    public void onResume(){
+        super.onResume();
+
+        Log.d(LOG_TAG, "OnResume is called");
+
+        GetTestResultsAsyncTask dbTask = new GetTestResultsAsyncTask(this);
+        dbTask.execute();
+
+    }
+
+    public class GetTestResultsAsyncTask extends AsyncTask<String, Void, ArrayList<TestHistoryItem>> {
+        private Context mContext;
+
+        public GetTestResultsAsyncTask(Context context ) {
+            mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(TestResultsActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
+            //android.R.style.Theme_DeviceDefault_Dialog_Alert);
+            mProgressDialog.setTitle("Please wait");
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.setMessage("Retrieving...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setInverseBackgroundForced(true);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected ArrayList<TestHistoryItem> doInBackground(String... strings) {
+            return populateHistoryItems();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<TestHistoryItem> items) {
+            // Attach the adapter to a ListView
+            TestResultsAdapter adapter = new TestResultsAdapter(mContext, items);
+            mListView.setAdapter(adapter);
+            mProgressDialog.dismiss();
+        }
+
+    }
 }

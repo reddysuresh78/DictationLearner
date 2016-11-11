@@ -43,12 +43,11 @@ public class DictationDetailFragment extends Fragment {
     public static final String ARG_DICTATION  = "mDictation";
     public static final String ARG_CUR_OPERATION = "operation";
 
-
     private Dictation mDictation;
     private EditText mEtDictionaryName;
     private ImageButton mIbSelectImage;
     private ImageView mIvDictationImage;
-    private DatabaseHelper dbHelper;
+    private DatabaseHelper mDBHelper;
     private boolean mIsEditing = false;
     private boolean mImageChanged = false;
     private String mCurrentOperation = null;
@@ -61,7 +60,7 @@ public class DictationDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dbHelper = new DatabaseHelper(getActivity());
+        mDBHelper = new DatabaseHelper(getActivity());
         setHasOptionsMenu(true);
     }
 
@@ -222,17 +221,18 @@ public class DictationDetailFragment extends Fragment {
         }
 
         if(!mIsEditing) {
-            long id = dbHelper.addDictation(mEtDictionaryName.getText().toString(), bm != null ? ImageUtils.getBytes(bm) : null);
-            Toast.makeText(getActivity() ,"Dictation Added",Toast.LENGTH_LONG ).show();
+            long id = mDBHelper.addDictation(mEtDictionaryName.getText().toString(), bm != null ? ImageUtils.getBytes(bm) : null);
+            Toast.makeText(getActivity() , R.string.add_dict_confirm,Toast.LENGTH_LONG ).show();
         }else{
-            dbHelper.updateDictation(mDictation.getId(),mEtDictionaryName.getText().toString(), null
+            mDBHelper.updateDictation(mDictation.getId(),mEtDictionaryName.getText().toString(), null
                     , mImageChanged ? ImageUtils.getBytes(bm) : null);
-            Toast.makeText(getActivity(),"Dictation Updated" ,Toast.LENGTH_LONG ).show();
+            Toast.makeText(getActivity(), R.string.update_dict_confirm ,Toast.LENGTH_LONG ).show();
         }
 
     }
 
     private void setValues() {
+
 
         Log.d(LOG_TAG,"Current operation is " + mCurrentOperation);
 
@@ -244,9 +244,8 @@ public class DictationDetailFragment extends Fragment {
         }else{
             mEtDictionaryName.setText(mDictation.getName());
             mIvDictationImage.setImageResource(mDictation.getImageResourceId());
-            if(mDictation.getImage() != null) {
-                mIvDictationImage.setImageBitmap(ImageUtils.getImage(mDictation.getImage()));
-            }
+            setImage();
+
             mIsEditing = true;
 
             if("VIEW".equalsIgnoreCase(mCurrentOperation)) {
@@ -257,4 +256,24 @@ public class DictationDetailFragment extends Fragment {
         }
 
     }
+
+    private void setImage(){
+
+        Log.d(LOG_TAG,"Fetching image for "  + mDictation.getId());
+        Cursor cursor = mDBHelper.getDictationImage(mDictation.getId());
+
+        if (null != cursor && cursor.getCount() > 0) {
+
+            cursor.moveToFirst();
+
+            byte[] image = cursor.getBlob(0);
+
+            if(image!=null && image.length >0) {
+                mIvDictationImage.setImageBitmap(ImageUtils.getImage(image));
+
+            }
+        }
+
+    }
+
 }

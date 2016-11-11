@@ -1,12 +1,14 @@
 package com.ri.dictationlearner.activity;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
@@ -38,16 +40,17 @@ public class WordsListActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "WordsListActivity";
 
-    private TextToSpeech textToSpeech;
+    private TextToSpeech mTextToSpeech;
 
-    private Dictation dictation;
+    private Dictation mDictation;
 
-    private DatabaseHelper dbHelper;
+    private DatabaseHelper mDBHelper;
 
-    private Cursor cursor = null;
+    private Cursor mCursor = null;
 
-    private DictationWordListAdapter cursorAdapter = null;
+    private DictationWordListAdapter mCursorAdapter = null;
 
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +65,8 @@ public class WordsListActivity extends AppCompatActivity {
 
             Bundle extras = getIntent().getExtras();
             if(extras != null) {
-                dictation  = (Dictation) extras.get("DICTATION");
-                dictationName = dictation.getName();
+                mDictation = (Dictation) extras.get("DICTATION");
+                dictationName = mDictation.getName();
             }
 
         }else{
@@ -71,16 +74,16 @@ public class WordsListActivity extends AppCompatActivity {
             Log.d(LOG_TAG , "savedInstanceState  " + savedInstanceState);
 
             dictationName = savedInstanceState.getString("title");
-            dictation  = (Dictation) savedInstanceState.get("DICTATION");
+            mDictation = (Dictation) savedInstanceState.get("DICTATION");
 
             Log.d(LOG_TAG , "Dictataion name " + dictationName);
         }
 
-        Log.d(LOG_TAG, "Received dictation "  + dictation);
+        Log.d(LOG_TAG, "Received mDictation "  + mDictation);
 
         setTitle("Dictation: " + dictationName);
 
-        dbHelper = new DatabaseHelper(this);
+        mDBHelper = new DatabaseHelper(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add_dictation_word);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +93,7 @@ public class WordsListActivity extends AppCompatActivity {
                 Log.d(LOG_TAG,"Trying to create new word");
 
                 Intent intent = new Intent(WordsListActivity.this, AddWordActivity.class);
-                Word word = new Word().setDictationId(dictation.getId()).setSerialNo(1); //We need to update this serialno correctly
+                Word word = new Word().setDictationId(mDictation.getId()).setSerialNo(1); //We need to update this serialno correctly
                 intent.putExtra("WORD", word);
 
                 Log.d(LOG_TAG,"Trying to create new word " + word);
@@ -103,27 +106,25 @@ public class WordsListActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        cursor = dbHelper.getWordList(dictation.getId());
-
-        cursorAdapter = new DictationWordListAdapter(this, cursor, 0  );
-        cursorAdapter.setReadOnlyMode(!GlobalState.isParentMode());
+        mCursorAdapter = new DictationWordListAdapter(this, mCursor, 0  );
+        mCursorAdapter.setReadOnlyMode(!GlobalState.isParentMode());
 
 
 // Attach the adapter to a ListView
         final ListView listView = (ListView) findViewById(R.id.lv_dictationwords);
-        listView.setAdapter(cursorAdapter);
+        listView.setAdapter(mCursorAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long id) {
-                cursor.moveToPosition(position);
-                Word word = DatabaseUtils.getWord(cursor);
+                mCursor.moveToPosition(position);
+                Word word = DatabaseUtils.getWord(mCursor);
 
                 Intent intent = new Intent(WordsListActivity.this, WordDetailActivity.class);
                 intent.putExtra("CURRENT_WORD_INDEX", position);
                 intent.putExtra("WORD", word);
-                intent.putExtra("NAME", dictation.getName());
+                intent.putExtra("NAME", mDictation.getName());
                 intent.putExtra("CURRENT_MODE", "SHOW");
                 startActivity(intent);
             }
@@ -155,15 +156,12 @@ public class WordsListActivity extends AppCompatActivity {
 
         Log.d(LOG_TAG,"Trying to delete " + word.getWord());
 
-        dbHelper.deleteWord( dictation.getId(),  word.getWordId());
+        mDBHelper.deleteWord( mDictation.getId(),  word.getWordId());
 
-        cursor.close();
+        GetWordsAsyncTask dbTask = new GetWordsAsyncTask(this);
+        dbTask.execute(mDictation.getId() );
 
-        cursor = dbHelper.getWordList(dictation.getId());
-
-        cursorAdapter.changeCursor(cursor);
-
-        Toast.makeText(this,"Word Deleted",Toast.LENGTH_LONG ).show();
+        Toast.makeText(this, R.string.delete_word_confirm,Toast.LENGTH_LONG ).show();
 
     }
 
@@ -173,11 +171,11 @@ public class WordsListActivity extends AppCompatActivity {
 
         Log.d(LOG_TAG,"Trying to speak " + word.getWord());
 
-        if(textToSpeech.isSpeaking()) {
-            textToSpeech.stop();
+        if(mTextToSpeech.isSpeaking()) {
+            mTextToSpeech.stop();
         }
         String toSpeak = word.getWord();
-        textToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+        mTextToSpeech.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public void editWordOnClickHandler(View v) {
@@ -198,26 +196,21 @@ public class WordsListActivity extends AppCompatActivity {
 
         Log.d(LOG_TAG, "OnResume is called");
 
-        if(cursor!=null){
-            cursor.close();
-        }
-
-        cursor = dbHelper.getWordList(dictation.getId());
-
-        cursorAdapter.changeCursor(cursor);
+        GetWordsAsyncTask dbTask = new GetWordsAsyncTask(this);
+        dbTask.execute(mDictation.getId());
 
         initializeSpeech();
     }
 
     public void onPause(){
-        if(textToSpeech !=null){
-            textToSpeech.stop();
-            textToSpeech.shutdown();
+        if(mTextToSpeech !=null){
+            mTextToSpeech.stop();
+            mTextToSpeech.shutdown();
 
         }
-
-        if(cursor!=null){
-            cursor.close();
+        Log.d(LOG_TAG, "OnPause is called");
+        if(mCursor !=null){
+            mCursor.close();
         }
         super.onPause();
     }
@@ -238,7 +231,7 @@ public class WordsListActivity extends AppCompatActivity {
         });
 
         Log.d(LOG_TAG,"Fetching image for "  + word.getDictationId()  + "/" + word.getWordId());
-        Cursor cursor = dbHelper.getWordImage(word.getDictationId(), word.getWordId());
+        Cursor cursor = mDBHelper.getWordImage(word.getDictationId(), word.getWordId());
 
         boolean imagePresent = false;
 
@@ -262,20 +255,20 @@ public class WordsListActivity extends AppCompatActivity {
         }
 
         if(!imagePresent){
-            Toast.makeText(this,"No picture present for this word", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_pic_warning, Toast.LENGTH_SHORT).show();
         }
 
     }
 
     private void initializeSpeech() {
 
-        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+        mTextToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
-                    textToSpeech.setLanguage(Locale.UK);
-                    textToSpeech.setSpeechRate(0.5f);
-                    textToSpeech.setPitch(0.6f);
+                    mTextToSpeech.setLanguage(Locale.UK);
+                    mTextToSpeech.setSpeechRate(0.5f);
+                    mTextToSpeech.setPitch(0.6f);
 
                     AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                     int amCurrentVolume = am.getStreamVolume(am.STREAM_MUSIC);
@@ -291,19 +284,19 @@ public class WordsListActivity extends AppCompatActivity {
     {
         super.onDestroy();
 
-        if(textToSpeech !=null){
-            textToSpeech.stop();
-            textToSpeech.shutdown();
-            textToSpeech = null;
+        if(mTextToSpeech !=null){
+            mTextToSpeech.stop();
+            mTextToSpeech.shutdown();
+            mTextToSpeech = null;
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        Log.d(LOG_TAG,"State has been saved for " + dictation);
+        Log.d(LOG_TAG,"State has been saved for " + mDictation);
         savedInstanceState.putString("title", this.getTitle().toString());
-        savedInstanceState.putParcelable("DICTATION", dictation);
+        savedInstanceState.putParcelable("DICTATION", mDictation);
         super.onSaveInstanceState(savedInstanceState);
 
         Log.d(LOG_TAG,"State has been saved");
@@ -315,6 +308,45 @@ public class WordsListActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         String title = savedInstanceState.getString("title");
         setTitle(title);
+    }
+
+    public class GetWordsAsyncTask extends AsyncTask<Integer, Void, Cursor> {
+        private Context mContext;
+
+        public GetWordsAsyncTask(Context context ) {
+            mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(WordsListActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
+            //android.R.style.Theme_DeviceDefault_Dialog_Alert);
+            mProgressDialog.setTitle("Please wait");
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.setMessage("Retrieving...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setInverseBackgroundForced(true);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Cursor doInBackground(Integer... dictationId) {
+            if(mCursor !=null){
+                mCursor.close();
+            }
+            return mDBHelper.getWordList(dictationId[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            mCursor = cursor;
+            mCursorAdapter.changeCursor(mCursor);
+            mProgressDialog.dismiss();
+
+        }
+
     }
 
 }

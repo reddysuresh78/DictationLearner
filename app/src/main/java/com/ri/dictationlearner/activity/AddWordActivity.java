@@ -33,11 +33,11 @@ public class AddWordActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "AddWordActivity";
     private static int RESULT_LOAD_IMAGE = 1;
-    private Word word;
+    private Word mWord;
     private EditText mEtWord;
     private ImageButton mIbSelectImage;
     private ImageView mIvWordImage;
-    private DatabaseHelper dbHelper;
+    private DatabaseHelper mDBHelper;
     private boolean mImageChanged = false;
     private boolean mIsEditing = false;
 
@@ -49,15 +49,15 @@ public class AddWordActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras != null) {
-                word =  (Word) extras.get("WORD");
+                mWord =  (Word) extras.get("WORD");
             }
         }
 
         mImageChanged = false;
 
-        Log.d("TT", "Received word "  + word);
+        Log.d(LOG_TAG, "Received mWord "  + mWord);
 
-        dbHelper = new DatabaseHelper(this);
+        mDBHelper = new DatabaseHelper(this);
 
         mEtWord = (EditText) findViewById(R.id.etNewWord);
         mIbSelectImage = (ImageButton) findViewById(R.id.ibSelectNewWordImage);
@@ -95,7 +95,7 @@ public class AddWordActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_save:
-                Log.d("TT","Save called");
+                Log.d(LOG_TAG,"Save called");
                 saveData();
                 if(mIsEditing) {
                     NavUtils.navigateUpFromSameTask(this);
@@ -120,12 +120,12 @@ public class AddWordActivity extends AppCompatActivity {
         }
 
         if(!mIsEditing) {
-            long id = dbHelper.addWord(word.getDictationId(),  mEtWord.getText().toString(), word.getSerialNo(), bm != null ? ImageUtils.getBytes(bm) : null);
-            Toast.makeText(this,"added word successfully",Toast.LENGTH_LONG ).show();
+            long id = mDBHelper.addWord(mWord.getDictationId(),  mEtWord.getText().toString(), mWord.getSerialNo(), bm != null ? ImageUtils.getBytes(bm) : null);
+            Toast.makeText(this, R.string.add_word_confirm,Toast.LENGTH_LONG ).show();
         }else{
-            boolean updateFlag = dbHelper.updateWord(word.getDictationId(), word.getWordId(),mEtWord.getText().toString(), null
+            mDBHelper.updateWord(mWord.getDictationId(), mWord.getWordId(),mEtWord.getText().toString(), null
                     , mImageChanged ? ImageUtils.getBytes(bm) : null);
-            Toast.makeText(this,"updated word successfully",Toast.LENGTH_LONG ).show();
+            Toast.makeText(this, R.string.update_word_confirm,Toast.LENGTH_LONG ).show();
         }
     }
 
@@ -163,7 +163,7 @@ public class AddWordActivity extends AppCompatActivity {
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            Log.d("MAIN", "Image is being retrieved " + picturePath);
+            Log.d(LOG_TAG, "Image is being retrieved " + picturePath);
 
             mIvWordImage.setImageBitmap(resizeBitmap(picturePath, 400, 400));
             mImageChanged = true;
@@ -181,14 +181,13 @@ public class AddWordActivity extends AppCompatActivity {
     }
 
     private void setValues() {
-        if (word != null && word.getWord() !=null ) {
-            mEtWord.setText(word.getWord());
-            mIvWordImage.setImageResource(word.getImageResourceId());
+        if (mWord != null && mWord.getWord() !=null ) {
+            mEtWord.setText(mWord.getWord());
+            mIvWordImage.setImageResource(mWord.getImageResourceId());
             mIvWordImage.setColorFilter(R.color.colorPrimary);
             setTitle("Edit Word");
-            if(word.getImage() != null) {
-                mIvWordImage.setImageBitmap(ImageUtils.getImage(word.getImage()));
-            }
+            setImage();
+
             mIsEditing = true;
 
         } else {
@@ -205,5 +204,21 @@ public class AddWordActivity extends AppCompatActivity {
         mImageChanged = false;
      }
 
+    private void setImage(){
+
+        Log.d(LOG_TAG,"Fetching image for "  + mWord.getDictationId()  + "/" + mWord.getWordId());
+        Cursor cursor = mDBHelper.getWordImage(mWord.getDictationId(), mWord.getWordId());
+
+        if (null != cursor && cursor.getCount() > 0) {
+
+            cursor.moveToFirst();
+
+            byte[] image = cursor.getBlob(0);
+
+            if(image!=null && image.length >0) {
+                mIvWordImage.setImageBitmap(ImageUtils.getImage(image));
+            }
+        }
+      }
 
 }

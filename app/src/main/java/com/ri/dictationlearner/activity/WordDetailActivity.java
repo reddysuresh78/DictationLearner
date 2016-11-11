@@ -120,7 +120,7 @@ public class WordDetailActivity extends AppCompatActivity {
                     String currentTag = (String) ibNextButton.getTag();
 
                     if("DONE".equalsIgnoreCase(currentTag)) {
-                        Toast.makeText(WordDetailActivity.this, "You are done with the test", Toast.LENGTH_LONG).show();
+                        Toast.makeText(WordDetailActivity.this, R.string.test_done_confirm, Toast.LENGTH_LONG).show();
                         finish();
                         return;
                     }
@@ -195,14 +195,14 @@ public class WordDetailActivity extends AppCompatActivity {
                 }
                 String entered = edWord.getText().toString();
                 if(entered == null || entered.isEmpty()) {
-                    Toast.makeText(WordDetailActivity.this, "Please type the word", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WordDetailActivity.this, R.string.type_word, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Word word = DatabaseUtils.getWord(cursor);
                 if(entered.equalsIgnoreCase(word.getWord())){
-                    Toast.makeText(WordDetailActivity.this, "You are right", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WordDetailActivity.this, R.string.correct_confirm, Toast.LENGTH_SHORT).show();
                 }else{
-                    Toast.makeText(WordDetailActivity.this, "You are wrong. Try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WordDetailActivity.this, R.string.wrong_confirm, Toast.LENGTH_SHORT).show();
                 }
             }
         });

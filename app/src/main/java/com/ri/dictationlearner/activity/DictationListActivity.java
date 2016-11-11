@@ -1,8 +1,11 @@
 package com.ri.dictationlearner.activity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -43,12 +46,18 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
 
     private boolean mTwoPane;
 
+    private ProgressDialog mProgressDialog;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dictation_list_container);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         if (findViewById(R.id.dictation_detail_container) != null) {
             // The detail container view will be present only in the
@@ -75,7 +84,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("MAIN","Trying to create new dictation");
+                Log.d(LOG_TAG,"Trying to create new dictation");
                 Intent intent = new Intent(DictationListActivity.this, DictationDetailActivity.class);
                 intent.putExtra("OPERATION", "NEW");
                 startActivity(intent);
@@ -83,8 +92,6 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
         });
 
         fab.setVisibility(GlobalState.isParentMode() ? View.VISIBLE: View.GONE );
-
-        mCursor = mDBHelper.getDictationList();
 
         mDictationListAdapter = new DictationListAdapter(this, mCursor, 0  );
         mDictationListAdapter.setReadOnlyMode(!GlobalState.isParentMode());
@@ -100,7 +107,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
                                     long id) {
                 mCursor.moveToPosition(position);
                 Dictation dictation = DatabaseUtils.getDictation(mCursor);
-                Log.d("MAIN","Trying to view " + dictation.getName());
+                Log.d(LOG_TAG,"Trying to view " + dictation.getName());
 
                 if (mTwoPane) {
                     mListView.setSelection(position);
@@ -148,7 +155,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
 
                 Log.d(LOG_TAG, "Status changed now " + isChecked);
                 GlobalState.savePreference(getString(R.string.pref_parent_mode), isChecked);
-                Toast.makeText(DictationListActivity.this,"Please restart app to apply " + (isChecked ? "Parent Mode": "Child Mode") ,Toast.LENGTH_LONG ).show();
+                Toast.makeText(DictationListActivity.this,getString(R.string.restart_warning) + (isChecked ? getString(R.string.parent_mode_label): getString(R.string.child_mode_label)) ,Toast.LENGTH_LONG ).show();
             }
         });
 
@@ -161,7 +168,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
 
                 Log.d(LOG_TAG, "Status changed now " + isChecked);
                 GlobalState.savePreference(getString(R.string.pref_test_show_images), isChecked);
-                Toast.makeText(DictationListActivity.this,"Please restart app to apply the changes" ,Toast.LENGTH_LONG ).show();
+                Toast.makeText(DictationListActivity.this, R.string.restart_warning_generic ,Toast.LENGTH_LONG ).show();
             }
         });
 
@@ -188,7 +195,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
     public void editDictationOnClickHandler(View v) {
         Dictation dictation = (Dictation) v.getTag();
 
-        Log.d("MAIN","Trying to edit " + dictation.getName());
+        Log.d(LOG_TAG,"Trying to edit " + dictation.getName());
 
         Intent intent = new Intent(DictationListActivity.this, DictationDetailActivity.class);
 
@@ -201,13 +208,11 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
 
     public void showWordListOnClickHandler(View v) {
         Dictation dictation = (Dictation) v.getTag();
-        String title = dictation.getName();
+
         Intent intent = new Intent(DictationListActivity.this, WordsListActivity.class);
         intent.putExtra("DICTATION", dictation);
         startActivity(intent);
     }
-
-
 
     public void deleteDictationOnClickHandler(View v) {
         showDialog(v);
@@ -216,17 +221,14 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
     private void deleteDictation(View v){
         Dictation dictation = (Dictation) v.getTag();
 
-        Log.d("MAIN","Trying to delete " + dictation.getName());
+        Log.d(LOG_TAG,"Trying to delete " + dictation.getName());
 
         mDBHelper.deleteDictation(dictation.getId());
 
-        mCursor.close();
+        GetDictationsAsyncTask dbTask = new GetDictationsAsyncTask(this);
+        dbTask.execute();
 
-        mCursor = mDBHelper.getDictationList();
-
-        mDictationListAdapter.changeCursor(mCursor);
-
-        Toast.makeText(this,"Dictation Deleted" ,Toast.LENGTH_LONG ).show();
+        Toast.makeText(this, R.string.delete_dictation_confirm ,Toast.LENGTH_LONG ).show();
 
     }
 
@@ -234,7 +236,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
         Dictation dictation = (Dictation) v.getTag();
 
         if(dictation.getWordCount() == 0) {
-            Toast.makeText(this,"There are no words in this dictation", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.no_word_warning, Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -256,7 +258,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
         Dictation dictation = (Dictation) v.getTag();
 
         if(dictation.getWordCount() == 0) {
-            Toast.makeText(this,"There are no words in this dictation", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,R.string.no_word_warning, Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -276,16 +278,13 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
 
     }
 
-
     public void onResume(){
         super.onResume();
 
         Log.d(LOG_TAG, "OnResume is called");
 
-
-        mCursor = mDBHelper.getDictationList();
-
-        mDictationListAdapter.changeCursor(mCursor);
+        GetDictationsAsyncTask dbTask = new GetDictationsAsyncTask(this);
+        dbTask.execute();
 
     }
 
@@ -334,6 +333,45 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
     }
 
 
+    public class GetDictationsAsyncTask extends AsyncTask<String, Void, Cursor> {
+        private Context mContext;
 
+        public GetDictationsAsyncTask(Context context ) {
+            mContext = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(DictationListActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
+            //android.R.style.Theme_DeviceDefault_Dialog_Alert);
+            mProgressDialog.setTitle("Please wait");
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.setMessage("Retrieving...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.setInverseBackgroundForced(true);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Cursor doInBackground(String... strings) {
+            return mDBHelper.getDictationList();
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            mCursor = cursor;
+            mDictationListAdapter.changeCursor(mCursor);
+            mProgressDialog.dismiss();
+
+            if(mTwoPane) {
+                if (mListView.getCount() > 0) {
+                    mListView.performItemClick(mListView, 0, mListView.getItemIdAtPosition(0));
+                }
+            }
+        }
+
+    }
 
 }

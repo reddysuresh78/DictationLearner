@@ -30,11 +30,11 @@ public class Dictation implements Parcelable {
         id = in.readInt();
         wordCount = in.readInt();
         imageResourceId = in.readInt();
-        int length = in.readInt();
-        if(length >0) {
-            image = new byte[length];
-            in.readByteArray(image);
-        }
+//        int length = in.readInt();
+//        if(length >0) {
+//            image = new byte[length];
+//            in.readByteArray(image);
+//        }
     }
 
     public static final Creator<Dictation> CREATOR = new Creator<Dictation>() {
@@ -115,14 +115,14 @@ public class Dictation implements Parcelable {
         parcel.writeInt(id);
         parcel.writeInt(wordCount);
         parcel.writeInt(imageResourceId);
-        if(image != null) {
-            parcel.writeInt(image.length);
-            if(image.length >0) {
-                parcel.writeByteArray(image);
-            }
-        }else{
-            parcel.writeInt(0);
-        }
+//        if(image != null) {
+//            parcel.writeInt(image.length);
+//            if(image.length >0) {
+//                parcel.writeByteArray(image);
+//            }
+//        }else{
+//            parcel.writeInt(0);
+//        }
 
 
     }
