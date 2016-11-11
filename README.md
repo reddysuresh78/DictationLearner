@@ -17,9 +17,7 @@ Features:
 
 The demo video is available below 
 
-Demo Video 
-   
-(./demo/Video.mp4)
+Demo Video is available under demo folder. (demo/Video.mp4)
 
 Here are screenshots of the application. 
 
