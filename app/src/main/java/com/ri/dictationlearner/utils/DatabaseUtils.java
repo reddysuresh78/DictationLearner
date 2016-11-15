@@ -18,6 +18,8 @@ import java.util.Date;
 
 public class DatabaseUtils {
 
+    public static final String DATE_FORMAT = "dd-MMM-yyyy";
+
     private DatabaseUtils(){}
 
     public static Dictation getDictation(Cursor cursor) {
@@ -56,7 +58,7 @@ public class DatabaseUtils {
 
         Date d = new Date ( Long.valueOf(milliSeconds));
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         String testDate  = sdf.format(d);
 
         return new TestHistoryItem()

@@ -14,15 +14,29 @@ import com.ri.dictationlearner.utils.ImageUtils;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class TestResultsSummaryAdapter extends ArrayAdapter<TestResultSummaryItem> {
 
     private static final String LOG_TAG = "TestResSumAdapter";
 
     // View lookup cache
-    private static class ViewHolder {
+    static class ViewHolder {
+
+        @InjectView(R.id.ivIcon)
         ImageView icon;
+
+        @InjectView(R.id.tvName)
         TextView name;
+
+        @InjectView(R.id.tvLblLatestScoreValue)
         TextView latestScore;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
+
 
     }
     public TestResultsSummaryAdapter(Context context, ArrayList<TestResultSummaryItem> items) {
@@ -37,13 +51,14 @@ public class TestResultsSummaryAdapter extends ArrayAdapter<TestResultSummaryIte
         ViewHolder viewHolder; // view lookup cache stored in tag
         if (convertView == null) {
             // If there's no view to re-use, inflate a brand new view for row
-            viewHolder = new ViewHolder();
+
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.test_results_summary_list_item, parent, false);
 
-            viewHolder.name = (TextView) convertView.findViewById(R.id.tvName);
-            viewHolder.latestScore = (TextView) convertView.findViewById(R.id.tvLblLatestScoreValue);
-            viewHolder.icon = (ImageView) convertView.findViewById(R.id.ivIcon);
+            viewHolder = new ViewHolder(convertView);
+//            viewHolder.name = (TextView) convertView.findViewById(R.id.tvName);
+//            viewHolder.latestScore = (TextView) convertView.findViewById(R.id.tvLblLatestScoreValue);
+//            viewHolder.icon = (ImageView) convertView.findViewById(R.id.ivIcon);
 
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);

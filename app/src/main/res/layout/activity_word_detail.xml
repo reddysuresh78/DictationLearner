@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_word_detail"
@@ -15,14 +16,13 @@
         android:id="@+id/etWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        tools:text="Word"
-        android:hint="@string/enter_word"
         android:layout_alignParentTop="true"
-        android:layout_margin="4dp"
-        android:textSize="@dimen/text_size_large"
         android:layout_centerHorizontal="true"
-        />
+        android:layout_margin="4dp"
+        android:hint="@string/enter_word"
+        android:text=""
+        android:textSize="@dimen/text_size_large"
+        tools:text="Word" />
 
 
     <ImageButton
@@ -30,14 +30,13 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_below="@+id/etWord"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_volume_up_white_24dp"
-        tools:src="@drawable/ic_volume_up_white_24dp"
-        android:background="@android:color/transparent"
-        android:tint="@color/colorPrimary"
-        android:onClick="playSoundOnClickHandler"
         android:layout_centerHorizontal="true"
-        />
+        android:layout_margin="8dp"
+        android:background="@android:color/transparent"
+        android:onClick="playSoundOnClickHandler"
+        android:src="@drawable/ic_volume_up_white_24dp"
+        android:tint="@color/colorPrimary"
+        tools:src="@drawable/ic_volume_up_white_24dp" />
 
 
     <ImageView
@@ -45,115 +44,130 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:src="@drawable/ic_broken_image_black_48dp"
-        tools:src="@drawable/ic_broken_image_black_48dp"
-        android:background="@android:color/transparent"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_broken_image_black_48dp"
+        tools:src="@drawable/ic_broken_image_black_48dp" />
 
     <ImageButton
+        android:id="@+id/ibToggleWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_visibility_off_black_24dp"
-        tools:src="@drawable/ic_visibility_off_black_24dp"
-        android:tint="@color/colorPrimary"
-        android:id="@+id/ibToggleWord"
-        android:background="@android:color/transparent"
         android:layout_alignTop="@+id/ibPlaySoundDetail"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:layout_toLeftOf="@+id/ibPlaySoundDetail"
         android:layout_toStartOf="@+id/ibPlaySoundDetail"
-        android:layout_marginRight="12dp"
-        android:layout_marginEnd="12dp" />
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_visibility_off_black_24dp"
+        android:tint="@color/colorPrimary"
+        tools:src="@drawable/ic_visibility_off_black_24dp" />
 
     <ImageButton
+        android:id="@+id/ibCheckSpelling"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_spellcheck_black_24dp"
-        tools:src="@drawable/ic_spellcheck_black_24dp"
-        android:id="@+id/ibCheckSpelling"
-        android:tint="@color/colorPrimary"
-        android:background="@android:color/transparent"
         android:layout_alignTop="@+id/ibPlaySoundDetail"
-        android:layout_toRightOf="@+id/ibPlaySoundDetail"
-        android:layout_toEndOf="@+id/ibPlaySoundDetail"
         android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp" />
+        android:layout_marginStart="12dp"
+        android:layout_toEndOf="@+id/ibPlaySoundDetail"
+        android:layout_toRightOf="@+id/ibPlaySoundDetail"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_spellcheck_black_24dp"
+        android:tint="@color/colorPrimary"
+        tools:src="@drawable/ic_spellcheck_black_24dp" />
 
     <LinearLayout
+        android:id="@+id/layout_actions"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/currentAd"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/ibGoToStart"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="8dp"
+            android:layout_toLeftOf="@+id/ibEditWord"
+            android:layout_toStartOf="@+id/ibEditWord"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_first_page_white_24dp"
+            android:tint="@color/colorPrimary"
+            tools:src="@drawable/ic_first_page_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/ibGoToPrevious"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="8dp"
+            android:layout_toLeftOf="@+id/ibEditWord"
+            android:layout_toStartOf="@+id/ibEditWord"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_chevron_left_white_24dp"
+            android:tint="@color/colorPrimary"
+            tools:src="@drawable/ic_chevron_left_white_24dp" />
+
+        <TextView
+            android:id="@+id/tvWordIndex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_toEndOf="@+id/ivIconHolder"
+            android:layout_toRightOf="@+id/ivIconHolder"
+            android:textColor="@android:color/primary_text_light"
+            android:textSize="@dimen/text_size_medium"
+            tools:text="Sunday" />
+
+
+        <ImageButton
+            android:id="@+id/ibGoToNext"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="8dp"
+            android:layout_toLeftOf="@+id/ibEditWord"
+            android:layout_toStartOf="@+id/ibEditWord"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_chevron_right_white_24dp"
+            android:tint="@color/colorPrimary"
+            tools:src="@drawable/ic_chevron_right_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/ibGoToEnd"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="8dp"
+            android:layout_toLeftOf="@+id/ibEditWord"
+            android:layout_toStartOf="@+id/ibEditWord"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_last_page_white_24dp"
+            android:tint="@color/colorPrimary"
+            tools:src="@drawable/ic_last_page_white_24dp" />
+
+
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="15dp"
+        android:id="@+id/currentAd"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
-    <ImageButton
-        android:id="@+id/ibGoToStart"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_toLeftOf="@+id/ibEditWord"
-        android:layout_toStartOf="@+id/ibEditWord"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_first_page_white_24dp"
-        tools:src="@drawable/ic_first_page_white_24dp"
-        android:background="@android:color/transparent"
-        android:tint="@color/colorPrimary"
-        />
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        >
 
-    <ImageButton
-        android:id="@+id/ibGoToPrevious"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_toLeftOf="@+id/ibEditWord"
-        android:layout_toStartOf="@+id/ibEditWord"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_chevron_left_white_24dp"
-        tools:src="@drawable/ic_chevron_left_white_24dp"
-        android:background="@android:color/transparent"
-        android:tint="@color/colorPrimary"
-        />
-
-    <TextView
-        android:id="@+id/tvWordIndex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/ivIconHolder"
-        android:layout_toEndOf="@+id/ivIconHolder"
-        android:layout_margin="4dp"
-        android:textSize="@dimen/text_size_medium"
-        tools:text="Sunday"
-        android:textColor="@android:color/primary_text_light"
-        />
-
-
-    <ImageButton
-        android:id="@+id/ibGoToNext"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_toLeftOf="@+id/ibEditWord"
-        android:layout_toStartOf="@+id/ibEditWord"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_chevron_right_white_24dp"
-        tools:src="@drawable/ic_chevron_right_white_24dp"
-        android:background="@android:color/transparent"
-        android:tint="@color/colorPrimary"
-        />
-
-    <ImageButton
-        android:id="@+id/ibGoToEnd"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_toLeftOf="@+id/ibEditWord"
-        android:layout_toStartOf="@+id/ibEditWord"
-        android:layout_margin="8dp"
-        android:src="@drawable/ic_last_page_white_24dp"
-        tools:src="@drawable/ic_last_page_white_24dp"
-        android:background="@android:color/transparent"
-        android:tint="@color/colorPrimary"
-        />
-
-
-        />
-
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_home_footer"></com.google.android.gms.ads.AdView>
     </LinearLayout>
 
 

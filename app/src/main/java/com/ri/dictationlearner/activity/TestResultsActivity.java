@@ -21,6 +21,9 @@ import com.ri.dictationlearner.utils.DatabaseUtils;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class TestResultsActivity extends AppCompatActivity {
@@ -35,7 +38,8 @@ public class TestResultsActivity extends AppCompatActivity {
 
     private String mDictationName = "";
 
-    private ListView mListView;
+    @InjectView(R.id.lv_dictation_test_history)
+    ListView mListView;
 
 
     @Override
@@ -43,6 +47,7 @@ public class TestResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_details);
 
+        ButterKnife.inject(this);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -58,7 +63,7 @@ public class TestResultsActivity extends AppCompatActivity {
 
         }
 
-        setTitle("Test Details for " + mDictationName);
+        setTitle(getString(R.string.header_test_details) + mDictationName);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -71,7 +76,7 @@ public class TestResultsActivity extends AppCompatActivity {
         TestResultsAdapter adapter = new TestResultsAdapter(this, historyItems);
 
 // Attach the adapter to a ListView
-        mListView = (ListView) findViewById(R.id.lv_dictation_test_history);
+//        mListView = (ListView) findViewById(R.id.lv_dictation_test_history);
         mListView.setAdapter(adapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -141,9 +146,9 @@ public class TestResultsActivity extends AppCompatActivity {
             super.onPreExecute();
             mProgressDialog = new ProgressDialog(TestResultsActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
             //android.R.style.Theme_DeviceDefault_Dialog_Alert);
-            mProgressDialog.setTitle("Please wait");
+            mProgressDialog.setTitle(getString(R.string.header_please_wait));
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Retrieving...");
+            mProgressDialog.setMessage(getString(R.string.message_retrieving));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setInverseBackgroundForced(true);

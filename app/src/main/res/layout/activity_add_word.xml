@@ -45,7 +45,7 @@
         android:layout_margin="4dp"
         android:textSize="@dimen/text_size_medium"
         tools:text="Image"
-        android:text="Picture"
+        android:text="@string/picture"
         android:textColor="@android:color/primary_text_light"
         />
 

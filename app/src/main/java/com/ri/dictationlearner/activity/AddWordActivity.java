@@ -27,6 +27,9 @@ import com.ri.dictationlearner.activity.db.DatabaseHelper;
 import com.ri.dictationlearner.domain.Word;
 import com.ri.dictationlearner.utils.ImageUtils;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 import static com.ri.dictationlearner.utils.ImageUtils.resizeBitmap;
 
 public class AddWordActivity extends AppCompatActivity {
@@ -34,17 +37,26 @@ public class AddWordActivity extends AppCompatActivity {
     private static final String LOG_TAG = "AddWordActivity";
     private static int RESULT_LOAD_IMAGE = 1;
     private Word mWord;
-    private EditText mEtWord;
-    private ImageButton mIbSelectImage;
-    private ImageView mIvWordImage;
     private DatabaseHelper mDBHelper;
+
     private boolean mImageChanged = false;
     private boolean mIsEditing = false;
+
+    @InjectView(R.id.etNewWord)
+    EditText mEtWord;
+
+    @InjectView(R.id.ibSelectNewWordImage)
+    ImageButton mIbSelectImage;
+
+    @InjectView(R.id.ivNewWordImage)
+    ImageView mIvWordImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_word);
+
+        ButterKnife.inject(this);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -58,10 +70,6 @@ public class AddWordActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Received mWord "  + mWord);
 
         mDBHelper = new DatabaseHelper(this);
-
-        mEtWord = (EditText) findViewById(R.id.etNewWord);
-        mIbSelectImage = (ImageButton) findViewById(R.id.ibSelectNewWordImage);
-        mIvWordImage = (ImageView) findViewById(R.id.ivNewWordImage);
 
         mIbSelectImage.setOnClickListener(new View.OnClickListener() {
                                               @Override
@@ -185,21 +193,21 @@ public class AddWordActivity extends AppCompatActivity {
             mEtWord.setText(mWord.getWord());
             mIvWordImage.setImageResource(mWord.getImageResourceId());
             mIvWordImage.setColorFilter(R.color.colorPrimary);
-            setTitle("Edit Word");
+            setTitle(getString(R.string.heading_edit_word));
             setImage();
 
             mIsEditing = true;
 
         } else {
-            mIvWordImage.setImageResource(R.drawable.ic_broken_image_white_48dp);
-            setTitle("New Word");
+            mIvWordImage.setImageResource(R.drawable.ic_broken_image_black_48dp);
+            setTitle(getString(R.string.heading_new_word));
             mIsEditing = false;
         }
     }
 
     private void clearFields() {
         mEtWord.setText("");
-        mIvWordImage.setImageResource(R.drawable.ic_broken_image_white_48dp);
+        mIvWordImage.setImageResource(R.drawable.ic_broken_image_black_48dp);
         mIvWordImage.setColorFilter(R.color.colorPrimary);
         mImageChanged = false;
      }

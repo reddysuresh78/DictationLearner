@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,6 +15,9 @@ import com.ri.dictationlearner.R;
 import com.ri.dictationlearner.domain.GlobalState;
 import com.ri.dictationlearner.domain.Word;
 import com.ri.dictationlearner.utils.DatabaseUtils;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class DictationWordListAdapter extends CursorAdapter {
 
@@ -25,14 +27,23 @@ public class DictationWordListAdapter extends CursorAdapter {
     private boolean mReadOnlyMode = true;
 
     // View lookup cache
-    private static class ViewHolder {
-        ImageView image;
-        TextView word;
+    static class ViewHolder {
 
+
+        @InjectView(R.id.tvWord)
+        TextView word;
+        @InjectView(R.id.ibPlaySound)
         ImageButton playSound;
+        @InjectView(R.id.ibEditWord)
         ImageButton editWord;
+        @InjectView(R.id.ibDeleteWord)
         ImageButton deleteWord;
+        @InjectView(R.id.ibShowWordImage)
         ImageButton showImage;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
 
     }
 
@@ -43,16 +54,17 @@ public class DictationWordListAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        DictationWordListAdapter.ViewHolder viewHolder = new DictationWordListAdapter.ViewHolder();
         LayoutInflater inflater = LayoutInflater.from(context);
         View convertView = inflater.inflate(R.layout.word_list_item, viewGroup, false);
 
-        viewHolder.image = (ImageView) convertView.findViewById(R.id.ibShowWordImage);
-        viewHolder.word = (TextView) convertView.findViewById(R.id.tvWord);
-        viewHolder.playSound = (ImageButton) convertView.findViewById(R.id.ibPlaySound);
-        viewHolder.editWord = (ImageButton) convertView.findViewById(R.id.ibEditWord);
-        viewHolder.deleteWord = (ImageButton) convertView.findViewById(R.id.ibDeleteWord);
-        viewHolder.showImage = (ImageButton) convertView.findViewById(R.id.ibShowWordImage);
+        ViewHolder viewHolder = new ViewHolder(convertView);
+
+//        viewHolder.image = (ImageView) convertView.findViewById(R.id.ibShowWordImage);
+//        viewHolder.word = (TextView) convertView.findViewById(R.id.tvWord);
+//        viewHolder.playSound = (ImageButton) convertView.findViewById(R.id.ibPlaySound);
+//        viewHolder.editWord = (ImageButton) convertView.findViewById(R.id.ibEditWord);
+//        viewHolder.deleteWord = (ImageButton) convertView.findViewById(R.id.ibDeleteWord);
+//        viewHolder.showImage = (ImageButton) convertView.findViewById(R.id.ibShowWordImage);
 
         if(!GlobalState.isParentMode()) {
 
@@ -86,7 +98,6 @@ public class DictationWordListAdapter extends CursorAdapter {
 
         viewHolder.deleteWord.setVisibility(mReadOnlyMode ?View.GONE: View.VISIBLE);
         viewHolder.editWord.setVisibility(mReadOnlyMode ?View.GONE: View.VISIBLE);
-
     }
 
     public void setReadOnlyMode(boolean readOnlyMode) {

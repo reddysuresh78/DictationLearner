@@ -13,17 +13,29 @@ import com.ri.dictationlearner.domain.TestHistoryWordDetails;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class TestResultsWordsAdapter extends ArrayAdapter<TestHistoryWordDetails> {
 
     private static final String LOG_TAG = "TestResWordsAdapter";
 
     // View lookup cache
-    private static class ViewHolder {
+    static class ViewHolder {
 
+        @InjectView(R.id.tvActualWord)
         TextView actualWord;
+        @InjectView(R.id.tvEnteredWord)
         TextView enteredWord;
+        @InjectView(R.id.ivCorrectStatus)
         ImageView correctIndicator;
+        @InjectView(R.id.ivWrongStatus)
         ImageView wrongIndicator;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
+
      }
 
     public TestResultsWordsAdapter(Context context, ArrayList<TestHistoryWordDetails> items) {
@@ -38,14 +50,16 @@ public class TestResultsWordsAdapter extends ArrayAdapter<TestHistoryWordDetails
         ViewHolder viewHolder; // view lookup cache stored in tag
         if (convertView == null) {
             // If there's no view to re-use, inflate a brand new view for row
-            viewHolder = new ViewHolder();
+
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.test_details_word_list_item, parent, false);
 
-            viewHolder.actualWord = (TextView) convertView.findViewById(R.id.tvActualWord);
-            viewHolder.enteredWord = (TextView) convertView.findViewById(R.id.tvEnteredWord);
-            viewHolder.correctIndicator = (ImageView) convertView.findViewById(R.id.ivCorrectStatus);
-            viewHolder.wrongIndicator = (ImageView) convertView.findViewById(R.id.ivWrongStatus);
+            viewHolder = new ViewHolder(convertView);
+
+//            viewHolder.actualWord = (TextView) convertView.findViewById(R.id.tvActualWord);
+//            viewHolder.enteredWord = (TextView) convertView.findViewById(R.id.tvEnteredWord);
+//            viewHolder.correctIndicator = (ImageView) convertView.findViewById(R.id.ivCorrectStatus);
+//            viewHolder.wrongIndicator = (ImageView) convertView.findViewById(R.id.ivWrongStatus);
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
         } else {

@@ -10,17 +10,23 @@ import android.view.MenuItem;
 
 import com.ri.dictationlearner.R;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class DictationDetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "DictationDetailActivity";
 
+    @InjectView(R.id.detail_toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dictation_detail);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        ButterKnife.inject(this);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
         // Show the Up button in the action bar.

@@ -36,6 +36,9 @@ import com.ri.dictationlearner.utils.ImageUtils;
 
 import java.util.Locale;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class WordsListActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "WordsListActivity";
@@ -52,11 +55,22 @@ public class WordsListActivity extends AppCompatActivity {
 
     private ProgressDialog mProgressDialog;
 
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @InjectView(R.id.fab_add_dictation_word)
+    FloatingActionButton fab;
+
+    @InjectView(R.id.lv_dictationwords)
+    ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_words_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        ButterKnife.inject(this);
+
         setSupportActionBar(toolbar);
 
         String dictationName = "";
@@ -76,16 +90,16 @@ public class WordsListActivity extends AppCompatActivity {
             dictationName = savedInstanceState.getString("title");
             mDictation = (Dictation) savedInstanceState.get("DICTATION");
 
-            Log.d(LOG_TAG , "Dictataion name " + dictationName);
+            Log.d(LOG_TAG , "Dictation name " + dictationName);
         }
 
-        Log.d(LOG_TAG, "Received mDictation "  + mDictation);
+        Log.d(LOG_TAG, "Received Dictation "  + mDictation);
 
-        setTitle("Dictation: " + dictationName);
+        setTitle(getString(R.string.header_dictation) + dictationName);
 
         mDBHelper = new DatabaseHelper(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add_dictation_word);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,7 +125,7 @@ public class WordsListActivity extends AppCompatActivity {
 
 
 // Attach the adapter to a ListView
-        final ListView listView = (ListView) findViewById(R.id.lv_dictationwords);
+
         listView.setAdapter(mCursorAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -140,8 +154,8 @@ public class WordsListActivity extends AppCompatActivity {
         Word word = (Word) v.getTag();
 
         new AlertDialog.Builder(this)
-                .setTitle("Confirm")
-                .setMessage("Do you really want to delete word " + word.getWord() + "?")
+                .setTitle(getString(R.string.header_dialog_confirm))
+                .setMessage(getString(R.string.message_delete_confirm) + word.getWord() + "?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
@@ -322,9 +336,9 @@ public class WordsListActivity extends AppCompatActivity {
             super.onPreExecute();
             mProgressDialog = new ProgressDialog(WordsListActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
             //android.R.style.Theme_DeviceDefault_Dialog_Alert);
-            mProgressDialog.setTitle("Please wait");
+            mProgressDialog.setTitle(getString(R.string.header_please_wait));
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Retrieving...");
+            mProgressDialog.setMessage(getString(R.string.message_retrieving));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setInverseBackgroundForced(true);

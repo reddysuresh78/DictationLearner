@@ -41,7 +41,7 @@
         android:layout_alignLeft="@+id/tvDictationName"
         android:layout_below="@+id/tvDictationName"
         android:layout_margin="4dp"
-        android:text="Picture"
+        android:text="@string/picture"
         android:textColor="@android:color/primary_text_light"
         android:textSize="@dimen/text_size_medium"
         tools:text="Image" />

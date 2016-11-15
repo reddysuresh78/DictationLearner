@@ -14,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.ri.dictationlearner.R;
 import com.ri.dictationlearner.activity.db.DatabaseHelper;
 import com.ri.dictationlearner.domain.GlobalState;
@@ -22,6 +25,9 @@ import com.ri.dictationlearner.utils.DatabaseUtils;
 import com.ri.dictationlearner.utils.ImageUtils;
 
 import java.util.Locale;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 
 public class WordDetailActivity extends AppCompatActivity {
@@ -33,16 +39,28 @@ public class WordDetailActivity extends AppCompatActivity {
     private String mCurrentMode;
 
     private int mCurrentWordIndex = -1;
-    private EditText edWord;
-    private TextView tvWordIndex;
-    private ImageView ivWordImage;
-    private ImageButton ibPrevButton;
-    private ImageButton ibNextButton;
-    private ImageButton ibStartButton;
-    private ImageButton ibEndButton;
-    private ImageButton ibPlaySoundButton;
-    private ImageButton ibToggleWordButton;
-    private ImageButton ibCheckSpellingButton;
+
+    @InjectView(R.id.etWord)
+    EditText edWord;
+    @InjectView(R.id.tvWordIndex)
+    TextView tvWordIndex;
+    @InjectView(R.id.ivWordImage)
+    ImageView ivWordImage;
+    @InjectView(R.id.ibGoToPrevious)
+    ImageButton ibPrevButton;
+    @InjectView(R.id.ibGoToNext)
+    ImageButton ibNextButton;
+    @InjectView(R.id.ibGoToStart)
+    ImageButton ibStartButton;
+    @InjectView(R.id.ibGoToEnd)
+    ImageButton ibEndButton;
+    @InjectView(R.id.ibPlaySoundDetail)
+    ImageButton ibPlaySoundButton;
+    @InjectView(R.id.ibToggleWord)
+    ImageButton ibToggleWordButton;
+    @InjectView(R.id.ibCheckSpelling)
+    ImageButton ibCheckSpellingButton;
+
     private DatabaseHelper dbHelper;
 
     private boolean isTestMode = false;
@@ -55,10 +73,16 @@ public class WordDetailActivity extends AppCompatActivity {
 
     private String dictationName;
 
+    @InjectView(R.id.adView)
+    AdView mAdView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_detail);
+
+        ButterKnife.inject(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -83,6 +107,13 @@ public class WordDetailActivity extends AppCompatActivity {
         }
         dbHelper = new DatabaseHelper(this);
 
+//        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("9FE9315EC5961D7BCA2C8E3569A4C3F8")
+                .build();
+        mAdView.loadAd(adRequest);
+
         isTestMode = false;
 
         if(mCurrentMode.equalsIgnoreCase("TEST")) {
@@ -91,14 +122,14 @@ public class WordDetailActivity extends AppCompatActivity {
         }
 
         cursor = dbHelper.getWordList(word.getDictationId());
-
-        edWord = (EditText) findViewById(R.id.etWord);
-
-        tvWordIndex = (TextView) findViewById(R.id.tvWordIndex);
-
-        ivWordImage = (ImageView) findViewById(R.id.ivWordImage);
-
-        ibPrevButton = (ImageButton) findViewById(R.id.ibGoToPrevious);
+//
+//        edWord = (EditText) findViewById(R.id.etWord);
+//
+//        tvWordIndex = (TextView) findViewById(R.id.tvWordIndex);
+//
+//        ivWordImage = (ImageView) findViewById(R.id.ivWordImage);
+//
+//        ibPrevButton = (ImageButton) findViewById(R.id.ibGoToPrevious);
         ibPrevButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,7 +141,7 @@ public class WordDetailActivity extends AppCompatActivity {
             }
         });
 
-        ibNextButton = (ImageButton) findViewById(R.id.ibGoToNext);
+//        ibNextButton = (ImageButton) findViewById(R.id.ibGoToNext);
         ibNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,7 +165,7 @@ public class WordDetailActivity extends AppCompatActivity {
             }
         });
 
-        ibStartButton = (ImageButton) findViewById(R.id.ibGoToStart);
+//        ibStartButton = (ImageButton) findViewById(R.id.ibGoToStart);
         ibStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,7 +175,7 @@ public class WordDetailActivity extends AppCompatActivity {
             }
         });
 
-        ibEndButton = (ImageButton) findViewById(R.id.ibGoToEnd);
+//        ibEndButton = (ImageButton) findViewById(R.id.ibGoToEnd);
         ibEndButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -154,7 +185,7 @@ public class WordDetailActivity extends AppCompatActivity {
             }
         });
 
-        ibPlaySoundButton = (ImageButton) findViewById(R.id.ibPlaySoundDetail);
+//        ibPlaySoundButton = (ImageButton) findViewById(R.id.ibPlaySoundDetail);
         ibPlaySoundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -162,7 +193,7 @@ public class WordDetailActivity extends AppCompatActivity {
             }
         });
 
-        ibToggleWordButton = (ImageButton) findViewById(R.id.ibToggleWord);
+//        ibToggleWordButton = (ImageButton) findViewById(R.id.ibToggleWord);
         ibToggleWordButton.setTag("Showing");
         ibToggleWordButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +216,7 @@ public class WordDetailActivity extends AppCompatActivity {
             }
         });
 
-        ibCheckSpellingButton= (ImageButton) findViewById(R.id.ibCheckSpelling);
+//        ibCheckSpellingButton= (ImageButton) findViewById(R.id.ibCheckSpelling);
         ibCheckSpellingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -208,10 +239,10 @@ public class WordDetailActivity extends AppCompatActivity {
         });
 
         if(mCurrentMode.equalsIgnoreCase("PRACTICE")){
-            setTitle("Practice: " + dictationName);
+            setTitle(getString(R.string.header_practice) + dictationName);
         }else if(mCurrentMode.equalsIgnoreCase("TEST")){
             isTestMode = true;
-            setTitle("Test: " + dictationName);
+            setTitle(getString(R.string.header_Test) + dictationName);
             ibCheckSpellingButton.setVisibility(View.INVISIBLE);
             ibToggleWordButton.setVisibility(View.INVISIBLE);
             ivWordImage.setVisibility( !GlobalState.isShowImagesEnabled() ?View.GONE: View.VISIBLE);
@@ -219,15 +250,44 @@ public class WordDetailActivity extends AppCompatActivity {
             ibEndButton.setVisibility(View.GONE);
             ibPrevButton.setVisibility(View.GONE);
          }else{
-            setTitle("View: " + dictationName);
+            setTitle(getString(R.string.header_view) + dictationName);
             ibCheckSpellingButton.setVisibility(View.INVISIBLE);
             ibToggleWordButton.setVisibility(View.INVISIBLE);
         }
+
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+//                Toast.makeText(getApplicationContext(), "Ad is loaded!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdClosed() {
+//                Toast.makeText(getApplicationContext(), "Ad is closed!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+//                Toast.makeText(getApplicationContext(), "Ad failed to load! error code: " + errorCode, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+//                Toast.makeText(getApplicationContext(), "Ad left application!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAdOpened() {
+//                Toast.makeText(getApplicationContext(), "Ad is opened!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         showWord();
         adjustControls();
 
     }
+
+
 
     private void saveWord(){
         Log.d(LOG_TAG,"Record test result for current word");
@@ -290,17 +350,29 @@ public class WordDetailActivity extends AppCompatActivity {
         if(cursor!=null){
             cursor.close();
         }
+
+        if (mAdView != null) {
+            mAdView.pause();
+        }
         super.onPause();
     }
 
     public void onResume(){
         super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
         initializeSpeech();
+
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
+
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
 
         if(textToSpeech !=null){
             textToSpeech.stop();

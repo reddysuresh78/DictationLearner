@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class  TestResultsSummaryActivity extends AppCompatActivity    {
@@ -34,13 +37,16 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
 
     private DatabaseHelper mDBHelper;
 
-    private ListView mListView = null;
+    @InjectView(R.id.lv_test_dictation_summary)
+    ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_results);
+
+        ButterKnife.inject(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -54,7 +60,7 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
 
         TestResultsSummaryAdapter adapter = new TestResultsSummaryAdapter(this, summaryItems );
 
-        mListView = (ListView) findViewById(R.id.lv_test_dictation_summary);
+//        mListView = (ListView) findViewById(R.id.lv_test_dictation_summary);
         mListView.setAdapter(adapter);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -132,9 +138,9 @@ public class  TestResultsSummaryActivity extends AppCompatActivity    {
             super.onPreExecute();
             mProgressDialog = new ProgressDialog(TestResultsSummaryActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
             //android.R.style.Theme_DeviceDefault_Dialog_Alert);
-            mProgressDialog.setTitle("Please wait");
+            mProgressDialog.setTitle(getString(R.string.header_please_wait));
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Retrieving...");
+            mProgressDialog.setMessage(getString(R.string.message_retrieving));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setInverseBackgroundForced(true);

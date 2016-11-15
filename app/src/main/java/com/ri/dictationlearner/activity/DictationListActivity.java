@@ -32,6 +32,9 @@ import com.ri.dictationlearner.domain.GlobalState;
 import com.ri.dictationlearner.domain.Word;
 import com.ri.dictationlearner.utils.DatabaseUtils;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class DictationListActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String LOG_TAG = "DictationListActivity";
@@ -40,13 +43,26 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
 
     private DictationListAdapter mDictationListAdapter = null;
 
-    private ListView mListView = null;
-
     private Cursor mCursor = null;
 
     private boolean mTwoPane;
 
     private ProgressDialog mProgressDialog;
+
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @InjectView(R.id.fab)
+    FloatingActionButton fab;
+
+    @InjectView(R.id.lv_dictations)
+    ListView mListView;
+
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout drawer;
+
+    @InjectView(R.id.nav_view)
+    NavigationView navigationView;
 
 
 
@@ -54,10 +70,12 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dictation_list_container);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        ButterKnife.inject(this);
+
+
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
         if (findViewById(R.id.dictation_detail_container) != null) {
             // The detail container view will be present only in the
@@ -80,7 +98,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,7 +115,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
         mDictationListAdapter.setReadOnlyMode(!GlobalState.isParentMode());
 
 // Attach the adapter to a ListView
-        mListView = (ListView) findViewById(R.id.lv_dictations);
+//        mListView = (ListView) findViewById(R.id.lv_dictations);
         mListView.setAdapter(mDictationListAdapter);
         mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
@@ -134,19 +152,19 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        setTitle("Dictation List");
+        setTitle(getString(R.string.header_dictation_list));
 
-        NavigationView nav = (NavigationView)findViewById(R.id.nav_view);
-        MenuItem switchItem = nav.getMenu().findItem(R.id.nav_parent_mode);
+//        NavigationView nav = (NavigationView)findViewById(R.id.nav_view);
+        MenuItem switchItem = navigationView.getMenu().findItem(R.id.nav_parent_mode);
         CompoundButton switchView = (CompoundButton) MenuItemCompat.getActionView(switchItem);
         switchView.setChecked(GlobalState.isParentMode());
         switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -159,7 +177,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
             }
         });
 
-        MenuItem switchItemImages = nav.getMenu().findItem(R.id.nav_test_show_images);
+        MenuItem switchItemImages = navigationView.getMenu().findItem(R.id.nav_test_show_images);
         CompoundButton switchViewImages = (CompoundButton) MenuItemCompat.getActionView(switchItemImages);
         switchViewImages.setChecked(GlobalState.isShowImagesEnabled());
         switchViewImages.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -177,13 +195,11 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
                 mListView.performItemClick(mListView, 0, mListView.getItemIdAtPosition(0));
             }
         }
-
-
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -305,7 +321,7 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
             startActivity(dbmanager);
         }*/
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -314,8 +330,8 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
         Dictation dictation  = (Dictation) v.getTag();
 
         new AlertDialog.Builder(this)
-                .setTitle("Confirm")
-                .setMessage("Do you really want to delete dictation " + dictation.getName() + "?")
+                .setTitle(R.string.header_dialog_confirm)
+                .setMessage(getString(R.string.message_dialog_delete) + dictation.getName() + "?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
@@ -345,9 +361,9 @@ public class DictationListActivity extends AppCompatActivity  implements Navigat
             super.onPreExecute();
             mProgressDialog = new ProgressDialog(DictationListActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
             //android.R.style.Theme_DeviceDefault_Dialog_Alert);
-            mProgressDialog.setTitle("Please wait");
+            mProgressDialog.setTitle(getString(R.string.header_please_wait));
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Retrieving...");
+            mProgressDialog.setMessage(getString(R.string.message_retrieving));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setInverseBackgroundForced(true);

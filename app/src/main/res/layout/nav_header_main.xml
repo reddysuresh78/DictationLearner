@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Dictation Learner"
+        android:text="@string/dictation_learner"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
 

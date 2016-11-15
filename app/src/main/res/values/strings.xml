@@ -111,6 +111,32 @@
     <string name="wrong_confirm">You are wrong. Try again.</string>
     <string name="delete_word_confirm">Word Deleted</string>
     <string name="no_pic_warning">No picture present for this word</string>
+    <string name="heading_edit_word">Edit Word</string>
+    <string name="heading_new_word">New Word</string>
+    <string name="header_new_dictation">New Dictation</string>
+    <string name="header_edit_dictation">Edit Dictation Details</string>
+    <string name="header_view_dictation">View Dictation Details</string>
+    <string name="header_dictation_list">Dictation List</string>
+    <string name="header_dialog_confirm">Confirm</string>
+    <string name="message_dialog_delete">"Do you really want to delete dictation "</string>
+    <string name="header_please_wait">Please wait</string>
+    <string name="message_retrieving">Retrieving...</string>
+    <string name="header_test_details">"Test Details for "</string>
+    <string name="header_on">" on "</string>
+    <string name="header_column_actual">Actual</string>
+    <string name="header_column_entered">Entered</string>
+    <string name="header_practice">"Practice: "</string>
+    <string name="header_Test">"Test: "</string>
+    <string name="header_view">"View: "</string>
+    <string name="header_dictation">"Dictation: "</string>
+    <string name="message_delete_confirm">"Do you really want to delete word "</string>
+    <string name="dictations_list">Dictations List</string>
+    <string name="tests_summary">Tests Summary</string>
+    <string name="dictation_learner">Dictation Learner</string>
+    <string name="picture">Picture</string>
+
+    <!-- AdMob ad unit IDs -->
+    <string name="banner_home_footer">ca-app-pub-5155702371839950/8883718621</string>
 
 
 </resources>

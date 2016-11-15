@@ -18,6 +18,9 @@ import com.ri.dictationlearner.utils.DatabaseUtils;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class TestWordDetailsActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "TestWordDetailsActivity";
@@ -28,12 +31,15 @@ public class TestWordDetailsActivity extends AppCompatActivity {
 
     private ProgressDialog mProgressDialog;
 
-    private ListView mListView;
+    @InjectView(R.id.lv_test_word_details)
+    ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_word_details);
+
+        ButterKnife.inject(this);
 
         String dictationName = "";
         if (savedInstanceState == null) {
@@ -47,7 +53,7 @@ public class TestWordDetailsActivity extends AppCompatActivity {
             mHistoryItem = (TestHistoryItem) savedInstanceState.get("TEST");
         }
 
-        setTitle(dictationName + " on " + mHistoryItem.getTestDate());
+        setTitle(dictationName + getString(R.string.header_on) + mHistoryItem.getTestDate());
 
         mDBHelper = new DatabaseHelper(this);
 
@@ -60,13 +66,13 @@ public class TestWordDetailsActivity extends AppCompatActivity {
         TestResultsWordsAdapter adapter = new TestResultsWordsAdapter(this, historyItems);
 
 // Attach the adapter to a ListView
-        mListView = (ListView) findViewById(R.id.lv_test_word_details);
+//        mListView = (ListView) findViewById(R.id.lv_test_word_details);
         mListView.setAdapter(adapter);
 
     }
     private ArrayList<TestHistoryWordDetails> populateHistoryWordItems() {
         ArrayList<TestHistoryWordDetails> testItems = new ArrayList<>();
-        testItems.add(new TestHistoryWordDetails( ).setActualWord("Actual").setEnteredWord("Entered").setCorrectIndicator(true));
+        testItems.add(new TestHistoryWordDetails( ).setActualWord(getString(R.string.header_column_actual)).setEnteredWord(getString(R.string.header_column_entered)).setCorrectIndicator(true));
         Cursor cursor = mDBHelper.getTestHistoryWordDetails(mHistoryItem.getTestId());
         //_id, dict_id, total_count, attempt_count, correct_count, wrong_count
         if(cursor != null && cursor.getCount() > 0 ) {
@@ -119,9 +125,9 @@ public class TestWordDetailsActivity extends AppCompatActivity {
             super.onPreExecute();
             mProgressDialog = new ProgressDialog(TestWordDetailsActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
             //android.R.style.Theme_DeviceDefault_Dialog_Alert);
-            mProgressDialog.setTitle("Please wait");
+            mProgressDialog.setTitle(getString(R.string.header_please_wait));
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage("Retrieving...");
+            mProgressDialog.setMessage(getString(R.string.message_retrieving));
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setCancelable(false);
             mProgressDialog.setInverseBackgroundForced(true);

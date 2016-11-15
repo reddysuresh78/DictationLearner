@@ -32,6 +32,9 @@ import com.ri.dictationlearner.activity.db.DatabaseHelper;
 import com.ri.dictationlearner.domain.Dictation;
 import com.ri.dictationlearner.utils.ImageUtils;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 import static android.app.Activity.RESULT_OK;
 import static com.ri.dictationlearner.utils.ImageUtils.resizeBitmap;
 
@@ -43,10 +46,22 @@ public class DictationDetailFragment extends Fragment {
     public static final String ARG_DICTATION  = "mDictation";
     public static final String ARG_CUR_OPERATION = "operation";
 
+    public static final String OP_VIEW = "VIEW";
+    public static final String OP_NEW = "NEW";
+    public static final String OP_EDIT = "EDIT";
+
+
     private Dictation mDictation;
-    private EditText mEtDictionaryName;
-    private ImageButton mIbSelectImage;
-    private ImageView mIvDictationImage;
+
+    @InjectView(R.id.etDictionaryName)
+    EditText mEtDictionaryName;
+
+    @InjectView(R.id.ibSelectImage)
+    ImageButton mIbSelectImage;
+
+    @InjectView(R.id.ivDictationImage)
+    ImageView mIvDictationImage;
+
     private DatabaseHelper mDBHelper;
     private boolean mIsEditing = false;
     private boolean mImageChanged = false;
@@ -69,10 +84,12 @@ public class DictationDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_dictation_detail, container, false);
 
+        ButterKnife.inject(this, rootView);
+
         mImageChanged = false;
-        mEtDictionaryName = (EditText) rootView.findViewById(R.id.etDictionaryName);
-        mIbSelectImage = (ImageButton) rootView.findViewById(R.id.ibSelectImage);
-        mIvDictationImage = (ImageView) rootView.findViewById(R.id.ivDictationImage);
+//        mEtDictionaryName = (EditText) rootView.findViewById(R.id.etDictionaryName);
+//        mIbSelectImage = (ImageButton) rootView.findViewById(R.id.ibSelectImage);
+//        mIvDictationImage = (ImageView) rootView.findViewById(R.id.ivDictationImage);
 
         mIbSelectImage.setOnClickListener(new View.OnClickListener() {
                                               @Override
@@ -119,12 +136,12 @@ public class DictationDetailFragment extends Fragment {
 
     private String getTitle(){
 
-        if("NEW".equalsIgnoreCase(mCurrentOperation)){
-            return "New Dictation";
-        }else if("EDIT".equalsIgnoreCase(mCurrentOperation)) {
-            return  "Edit Dictation Details" ;
+        if(OP_NEW.equalsIgnoreCase(mCurrentOperation)){
+            return getString(R.string.header_new_dictation);
+        }else if(OP_EDIT.equalsIgnoreCase(mCurrentOperation)) {
+            return  getString(R.string.header_edit_dictation) ;
         }else{
-            return "View Dictation Details" ;
+            return getString(R.string.header_view_dictation) ;
         }
     }
 
@@ -199,7 +216,7 @@ public class DictationDetailFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        if(!"VIEW".equalsIgnoreCase(mCurrentOperation)) {
+        if(!OP_VIEW.equalsIgnoreCase(mCurrentOperation)) {
             getActivity().getMenuInflater().inflate(R.menu.menu_save_cancel_item, menu);
         }
     }
@@ -236,7 +253,7 @@ public class DictationDetailFragment extends Fragment {
 
         Log.d(LOG_TAG,"Current operation is " + mCurrentOperation);
 
-        if("NEW".equalsIgnoreCase(mCurrentOperation)) {
+        if(OP_NEW.equalsIgnoreCase(mCurrentOperation)) {
             mIvDictationImage.setImageResource(R.drawable.ic_broken_image_black_48dp);
 //            mIvDictationImage.setColorFilter(R.color.colorPrimary);
 
@@ -248,7 +265,7 @@ public class DictationDetailFragment extends Fragment {
 
             mIsEditing = true;
 
-            if("VIEW".equalsIgnoreCase(mCurrentOperation)) {
+            if(OP_VIEW.equalsIgnoreCase(mCurrentOperation)) {
                 mEtDictionaryName.setEnabled(false);
                 mIbSelectImage.setEnabled(false);
             }

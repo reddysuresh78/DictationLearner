@@ -15,6 +15,9 @@ import com.ri.dictationlearner.domain.Dictation;
 import com.ri.dictationlearner.utils.DatabaseUtils;
 import com.ri.dictationlearner.utils.ImageUtils;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class DictationListAdapter extends CursorAdapter {
 
     private static final String LOG_TAG = "DictationListAdapter";
@@ -22,17 +25,31 @@ public class DictationListAdapter extends CursorAdapter {
     private boolean mReadOnlyMode = true;
 
     // View lookup cache
-    private static class ViewHolder {
+    static class ViewHolder {
+
+        @InjectView(R.id.ivIcon)
         ImageView icon;
+        @InjectView(R.id.tvName)
         TextView name;
-        TextView testDate;
+
+        @InjectView(R.id.tvWordCount)
         TextView wordCount;
+        @InjectView(R.id.tvLblWordCount)
         TextView wordCountLabel;
+        @InjectView(R.id.ibEditDictation)
         ImageButton editDictation;
+        @InjectView(R.id.ibDeleteDictation)
         ImageButton deleteDictation;
+        @InjectView(R.id.ibTakeTest)
         ImageButton takeTest;
+        @InjectView(R.id.ibPracticeDictation)
         ImageButton practiceDictation;
+        @InjectView(R.id.ibShowWordList)
         ImageButton showWordsList;
+
+        public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
+        }
     }
 
     // Default constructor
@@ -43,24 +60,25 @@ public class DictationListAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
 
-        ViewHolder viewHolder = new ViewHolder();
         LayoutInflater inflater = LayoutInflater.from(context);
         View convertView = inflater.inflate(R.layout.dictation_list_item, viewGroup, false);
 
-        viewHolder.name = (TextView) convertView.findViewById(R.id.tvName);
-        viewHolder.testDate = (TextView) convertView.findViewById(R.id.tvTestDate);
-        viewHolder.wordCount = (TextView) convertView.findViewById(R.id.tvWordCount);
-        viewHolder.wordCountLabel = (TextView) convertView.findViewById(R.id.tvLblWordCount);
-        viewHolder.icon = (ImageView) convertView.findViewById(R.id.ivIcon);
-        viewHolder.editDictation = (ImageButton) convertView.findViewById(R.id.ibEditDictation);
+        ViewHolder viewHolder = new ViewHolder(convertView);
 
-        viewHolder.deleteDictation= (ImageButton) convertView.findViewById(R.id.ibDeleteDictation);
-
-        viewHolder.takeTest = (ImageButton) convertView.findViewById(R.id.ibTakeTest);
-
-        viewHolder.practiceDictation= (ImageButton) convertView.findViewById(R.id.ibPracticeDictation);
-
-        viewHolder.showWordsList= (ImageButton) convertView.findViewById(R.id.ibShowWordList);
+//        viewHolder.name = (TextView) convertView.findViewById(R.id.tvName);
+//        viewHolder.testDate = (TextView) convertView.findViewById(R.id.tvTestDate);
+//        viewHolder.wordCount = (TextView) convertView.findViewById(R.id.tvWordCount);
+//        viewHolder.wordCountLabel = (TextView) convertView.findViewById(R.id.tvLblWordCount);
+//        viewHolder.icon = (ImageView) convertView.findViewById(R.id.ivIcon);
+//        viewHolder.editDictation = (ImageButton) convertView.findViewById(R.id.ibEditDictation);
+//
+//        viewHolder.deleteDictation= (ImageButton) convertView.findViewById(R.id.ibDeleteDictation);
+//
+//        viewHolder.takeTest = (ImageButton) convertView.findViewById(R.id.ibTakeTest);
+//
+//        viewHolder.practiceDictation= (ImageButton) convertView.findViewById(R.id.ibPracticeDictation);
+//
+//        viewHolder.showWordsList= (ImageButton) convertView.findViewById(R.id.ibShowWordList);
 
         // Cache the viewHolder object inside the fresh view
         convertView.setTag(viewHolder);

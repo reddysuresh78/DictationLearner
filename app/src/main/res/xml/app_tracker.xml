@@ -1,0 +1,28 @@
+<resources>
+    <!-- End current session if app sleeps for a period of time -->
+    <integer name="ga_sessionTimeout">300</integer>
+
+    <!-- Enable automatic Activity measurement -->
+    <bool name="ga_autoActivityTracking">true</bool>
+
+    <!--  The property id associated with this analytics tracker -->
+    <string name="ga_trackingId">UA-87407342-1</string>
+
+    <string name="ga_sampleFrequency">100.0</string>
+
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+
+    <screenName name="com.ri.dictationlearner.activity.DictationListActivity">Dictation List</screenName>
+    <screenName name="com.ri.dictationlearner.activity.TestResultsActivity">Test Results History</screenName>
+    <screenName name="com.ri.dictationlearner.activity.TestResultsSummaryActivity">Dictation Test Summary</screenName>
+    <screenName name="com.ri.dictationlearner.activity.TestWordDetailsActivity">Word Details For a Test</screenName>
+    <screenName name="com.ri.dictationlearner.activity.WordDetailActivity">Word Details</screenName>
+    <screenName name="com.ri.dictationlearner.activity.WordsListActivity">Words List</screenName>
+    <screenName name="com.ri.dictationlearner.activity.AddWordActivity">Add Word</screenName>
+    <screenName name="com.ri.dictationlearner.activity.DictationDetailActivity">Dictation Details</screenName>
+
+    <!--
+      See Project Structure -> Analytics -> Google Analytics -> Learn More
+      to learn more about configuring this file.
+    -->
+</resources>
