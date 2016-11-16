@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.ri.dictationlearner.R;
-import com.ri.dictationlearner.activity.db.DatabaseHelper;
+import com.ri.dictationlearner.db.DatabaseHelper;
 import com.ri.dictationlearner.adapters.TestResultsSummaryAdapter;
 import com.ri.dictationlearner.domain.Dictation;
 import com.ri.dictationlearner.domain.TestResultSummaryItem;

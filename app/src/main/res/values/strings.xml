@@ -138,5 +138,7 @@
     <!-- AdMob ad unit IDs -->
     <string name="banner_home_footer">ca-app-pub-5155702371839950/8883718621</string>
 
+    <string name="content_authority">com.ri.dictationlearner</string>
+
 
 </resources>

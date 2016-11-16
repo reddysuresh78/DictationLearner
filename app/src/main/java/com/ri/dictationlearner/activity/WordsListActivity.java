@@ -1,14 +1,17 @@
 package com.ri.dictationlearner.activity;
 
 import android.app.Dialog;
+import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
@@ -26,8 +29,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.ri.dictationlearner.R;
-import com.ri.dictationlearner.activity.db.DatabaseHelper;
 import com.ri.dictationlearner.adapters.DictationWordListAdapter;
+import com.ri.dictationlearner.db.DatabaseHelper;
+import com.ri.dictationlearner.db.DictationContract;
 import com.ri.dictationlearner.domain.Dictation;
 import com.ri.dictationlearner.domain.GlobalState;
 import com.ri.dictationlearner.domain.Word;
@@ -39,7 +43,7 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class WordsListActivity extends AppCompatActivity {
+public class WordsListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String LOG_TAG = "WordsListActivity";
 
@@ -54,6 +58,18 @@ public class WordsListActivity extends AppCompatActivity {
     private DictationWordListAdapter mCursorAdapter = null;
 
     private ProgressDialog mProgressDialog;
+
+    private Uri mUri;
+
+
+    //_id,dict_id, word, word_order,word_image
+    private static final String[] WORD_COLUMNS = {
+            DictationContract.WordsEntry.KEY_ID,
+            DictationContract.WordsEntry.KEY_DICTATION_ID,
+            DictationContract.WordsEntry.KEY_WORD,
+            DictationContract.WordsEntry.KEY_WORD_ORDER,
+            DictationContract.WordsEntry.KEY_WORD_IMAGE
+     };
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
@@ -96,6 +112,10 @@ public class WordsListActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "Received Dictation "  + mDictation);
 
         setTitle(getString(R.string.header_dictation) + dictationName);
+
+        mUri = DictationContract.WordsEntry.buildWordUri(mDictation.getId());
+
+        getLoaderManager().initLoader(0, null, this);
 
         mDBHelper = new DatabaseHelper(this);
 
@@ -172,8 +192,7 @@ public class WordsListActivity extends AppCompatActivity {
 
         mDBHelper.deleteWord( mDictation.getId(),  word.getWordId());
 
-        GetWordsAsyncTask dbTask = new GetWordsAsyncTask(this);
-        dbTask.execute(mDictation.getId() );
+        getLoaderManager().restartLoader(0, null, this);
 
         Toast.makeText(this, R.string.delete_word_confirm,Toast.LENGTH_LONG ).show();
 
@@ -209,9 +228,7 @@ public class WordsListActivity extends AppCompatActivity {
         super.onResume();
 
         Log.d(LOG_TAG, "OnResume is called");
-
-        GetWordsAsyncTask dbTask = new GetWordsAsyncTask(this);
-        dbTask.execute(mDictation.getId());
+        getLoaderManager().restartLoader(0, null, this);
 
         initializeSpeech();
     }
@@ -223,9 +240,7 @@ public class WordsListActivity extends AppCompatActivity {
 
         }
         Log.d(LOG_TAG, "OnPause is called");
-        if(mCursor !=null){
-            mCursor.close();
-        }
+
         super.onPause();
     }
 
@@ -285,7 +300,6 @@ public class WordsListActivity extends AppCompatActivity {
                     mTextToSpeech.setPitch(0.6f);
 
                     AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                    int amCurrentVolume = am.getStreamVolume(am.STREAM_MUSIC);
                     am.setStreamVolume(am.STREAM_MUSIC, 10, 0);
 
                 }
@@ -324,43 +338,35 @@ public class WordsListActivity extends AppCompatActivity {
         setTitle(title);
     }
 
-    public class GetWordsAsyncTask extends AsyncTask<Integer, Void, Cursor> {
-        private Context mContext;
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        public GetWordsAsyncTask(Context context ) {
-            mContext = context;
+        if ( null != mUri ) {
+            // Now create and return a CursorLoader that will take care of
+            // creating a Cursor for the data being displayed.
+            return new CursorLoader(
+                    this,
+                    mUri,
+                    WORD_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
         }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog = new ProgressDialog(WordsListActivity.this,ProgressDialog.THEME_DEVICE_DEFAULT_DARK);
-            //android.R.style.Theme_DeviceDefault_Dialog_Alert);
-            mProgressDialog.setTitle(getString(R.string.header_please_wait));
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mProgressDialog.setMessage(getString(R.string.message_retrieving));
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.setInverseBackgroundForced(true);
-            mProgressDialog.show();
-        }
-
-        @Override
-        protected Cursor doInBackground(Integer... dictationId) {
-            if(mCursor !=null){
-                mCursor.close();
-            }
-            return mDBHelper.getWordList(dictationId[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Cursor cursor) {
-            mCursor = cursor;
-            mCursorAdapter.changeCursor(mCursor);
-            mProgressDialog.dismiss();
-
-        }
-
+        return null;
     }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mCursor = cursor;
+        mCursorAdapter.swapCursor(mCursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(LOG_TAG, "Reset loader called");
+    }
+
 
 }

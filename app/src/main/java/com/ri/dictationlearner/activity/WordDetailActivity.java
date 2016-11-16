@@ -18,7 +18,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.ri.dictationlearner.R;
-import com.ri.dictationlearner.activity.db.DatabaseHelper;
+import com.ri.dictationlearner.db.DatabaseHelper;
 import com.ri.dictationlearner.domain.GlobalState;
 import com.ri.dictationlearner.domain.Word;
 import com.ri.dictationlearner.utils.DatabaseUtils;

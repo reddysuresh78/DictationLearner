@@ -59,6 +59,13 @@
         <activity android:name="com.ri.dictationlearner.activity.db.AndroidDatabaseManager"
             android:theme="@style/Theme.AppCompat.Light"/>
 
+
+        <provider
+            android:name=".db.DictationInfoProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false"
+            android:syncable="true" />
+
         <receiver android:name="com.ri.dictationlearner.widget.DictationWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.ri.dictationlearner.R;
-import com.ri.dictationlearner.activity.db.DatabaseHelper;
+import com.ri.dictationlearner.db.DatabaseHelper;
 import com.ri.dictationlearner.adapters.TestResultsAdapter;
 import com.ri.dictationlearner.domain.TestHistoryItem;
 import com.ri.dictationlearner.domain.TestResultSummaryItem;

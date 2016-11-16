@@ -1,4 +1,4 @@
-package com.ri.dictationlearner.activity.db;
+package com.ri.dictationlearner.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -39,10 +39,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_DICTATION_CREATED_DATE = "dict_created_date";
 
     // column names for WORDS
-    private static final String KEY_WORD = "word";
-    private static final String KEY_WORD_IMAGE = "word_image";
-    private static final String KEY_DICTATION_ID = "dict_id";
-    private static final String KEY_WORD_ORDER = "word_order";
+//    private static final String KEY_WORD = "word";
+//    private static final String KEY_WORD_IMAGE = "word_image";
+//    private static final String KEY_DICTATION_ID = "dict_id";
+//    private static final String KEY_WORD_ORDER = "word_order";
 
     // column names for TESTS
     private static final String KEY_TEST_DATE = "test_date";
@@ -71,24 +71,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // WORDS table create statement
     private static final String CREATE_TABLE_WORDS = "CREATE TABLE "
             + TABLE_WORDS + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_DICTATION_ID + " INTEGER,"
-            + KEY_WORD + " TEXT,"
-            + KEY_WORD_ORDER + " INTEGER,"
-            + KEY_WORD_IMAGE + " BLOB,"
-            + " FOREIGN KEY (" + KEY_DICTATION_ID + ") REFERENCES " +  TABLE_DICTATIONS + "("+ KEY_ID + ")"
+            + DictationContract.WordsEntry.KEY_DICTATION_ID + " INTEGER,"
+            + DictationContract.WordsEntry.KEY_WORD + " TEXT,"
+            + DictationContract.WordsEntry.KEY_WORD_ORDER + " INTEGER,"
+            + DictationContract.WordsEntry.KEY_WORD_IMAGE + " BLOB,"
+            + " FOREIGN KEY (" + DictationContract.WordsEntry.KEY_DICTATION_ID + ") REFERENCES " +  TABLE_DICTATIONS + "("+ KEY_ID + ")"
             + ON_DELETE_CASCADE
             + ")";
 
     // TESTS table create statement
     private static final String CREATE_TABLE_TESTS = "CREATE TABLE "
             + TABLE_TESTS + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + KEY_DICTATION_ID + " INTEGER,"
+            + DictationContract.WordsEntry.KEY_DICTATION_ID + " INTEGER,"
             + KEY_TEST_DATE + " INTEGER,"
             + KEY_WORD_TOTAL_COUNT + " INTEGER,"
             + KEY_WORD_ATTEMPT_COUNT + " INTEGER,"
             + KEY_WORD_CORRECT_COUNT + " INTEGER,"
             + KEY_WORD_WRONG_COUNT + " INTEGER,"
-            + " FOREIGN KEY (" + KEY_DICTATION_ID + ") REFERENCES " +  TABLE_DICTATIONS + "("+ KEY_ID + ")"
+            + " FOREIGN KEY (" + DictationContract.WordsEntry.KEY_DICTATION_ID + ") REFERENCES " +  TABLE_DICTATIONS + "("+ KEY_ID + ")"
             + ON_DELETE_CASCADE
             + ")";
 
@@ -153,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(KEY_DICTATION_ID,dictationId);
+        contentValues.put(DictationContract.WordsEntry.KEY_DICTATION_ID,dictationId);
         contentValues.put(KEY_TEST_DATE,new java.util.Date().getTime());
         contentValues.put(KEY_WORD_TOTAL_COUNT, totalCount);
         contentValues.put(KEY_WORD_ATTEMPT_COUNT, 0);
@@ -327,12 +327,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(KEY_DICTATION_ID,dictationId);
-        contentValues.put(KEY_WORD, word);
-        contentValues.put(KEY_WORD_ORDER, order);
+        contentValues.put(DictationContract.WordsEntry.KEY_DICTATION_ID,dictationId);
+        contentValues.put(DictationContract.WordsEntry.KEY_WORD, word);
+        contentValues.put(DictationContract.WordsEntry.KEY_WORD_ORDER, order);
 
         if(image!=null) {
-            contentValues.put(KEY_WORD_IMAGE , image);
+            contentValues.put(DictationContract.WordsEntry.KEY_WORD_IMAGE , image);
         }
 
         long id = db.insert(TABLE_WORDS, null, contentValues);
@@ -350,13 +350,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         if(word != null) {
-            contentValues.put(KEY_WORD, word);
+            contentValues.put(DictationContract.WordsEntry.KEY_WORD, word);
         }
         if(order != null) {
-            contentValues.put(KEY_WORD_ORDER, order);
+            contentValues.put(DictationContract.WordsEntry.KEY_WORD_ORDER, order);
         }
         if(image != null) {
-            contentValues.put(KEY_WORD_IMAGE, image);
+            contentValues.put(DictationContract.WordsEntry.KEY_WORD_IMAGE, image);
         }
 
         int recCount = db.update(TABLE_WORDS, contentValues,"_id= ? and dict_id = ?", new String[] { String.valueOf(wordId), String.valueOf(dictationId) });

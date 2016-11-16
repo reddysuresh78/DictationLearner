@@ -23,7 +23,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.ri.dictationlearner.R;
-import com.ri.dictationlearner.activity.db.DatabaseHelper;
+import com.ri.dictationlearner.db.DatabaseHelper;
 import com.ri.dictationlearner.domain.Word;
 import com.ri.dictationlearner.utils.ImageUtils;
 

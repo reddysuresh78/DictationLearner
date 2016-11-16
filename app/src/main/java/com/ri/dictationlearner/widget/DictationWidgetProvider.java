@@ -9,7 +9,7 @@ import android.database.Cursor;
 import android.widget.RemoteViews;
 
 import com.ri.dictationlearner.R;
-import com.ri.dictationlearner.activity.db.DatabaseHelper;
+import com.ri.dictationlearner.db.DatabaseHelper;
 
 public class DictationWidgetProvider extends AppWidgetProvider {
 
