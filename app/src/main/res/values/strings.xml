@@ -139,6 +139,10 @@
     <string name="banner_home_footer">ca-app-pub-5155702371839950/8883718621</string>
 
     <string name="content_authority">com.ri.dictationlearner</string>
+    <string name="default_dict_count">000</string>
+    <string name="refresh">Refresh</string>
+    <string name="label_word">word</string>
+    <string name="label_words">words</string>
 
 
 </resources>

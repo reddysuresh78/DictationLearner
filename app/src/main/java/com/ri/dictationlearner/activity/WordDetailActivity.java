@@ -110,7 +110,7 @@ public class WordDetailActivity extends AppCompatActivity {
 //        mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("9FE9315EC5961D7BCA2C8E3569A4C3F8")
+//                .addTestDevice("9FE9315EC5961D7BCA2C8E3569A4C3F8")
                 .build();
         mAdView.loadAd(adRequest);
 

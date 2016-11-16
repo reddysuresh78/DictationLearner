@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="000"
+        android:text="@string/default_dict_count"
         android:textSize="@dimen/abc_text_size_large_material"
         android:textStyle="bold"/>
 
@@ -27,6 +27,6 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="Refresh"/>
+        android:text="@string/refresh"/>
 
 </LinearLayout>

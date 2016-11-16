@@ -96,9 +96,9 @@ public class DictationListAdapter extends CursorAdapter {
         viewHolder.wordCount.setText("" +dictation.getWordCount());
 
         if(dictation.getWordCount() == 1) {
-            viewHolder.wordCountLabel.setText("word");
+            viewHolder.wordCountLabel.setText(R.string.label_word);
         }else{
-            viewHolder.wordCountLabel.setText("words");
+            viewHolder.wordCountLabel.setText(R.string.label_words);
         }
 
         if(dictation.getImage() != null ) {
